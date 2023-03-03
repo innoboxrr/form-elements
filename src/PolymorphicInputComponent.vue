@@ -91,9 +91,11 @@
 
 				<div v-if="props.type == 'file'">
 					
-					<div class="uk-margin"><label class="uk-form-label">{{ props.label }}</label></div>
+					<div class="uk-margin">
 
-					<file-info-row v-if="modelValue" :key="modelValue" :file-id="modelValue" />
+						<label class="uk-form-label">{{ props.label }}</label>
+
+					</div>
 
 					<file-input-component 
 			            message="Arrastre y suelte los archivos a subir aquí"
@@ -124,19 +126,18 @@
 
 <script>
 		
-	import CheckboxInputComponent from '@components/forms/CheckboxInputComponent'
-	import SingleCheckboxInputComponent from '@components/forms/SingleCheckboxInputComponent'
-	import MultiCheckboxInputComponent from '@components/forms/MultiCheckboxInputComponent'
-	import EditorInputComponent from '@components/forms/EditorInputComponent'
-	import FileInputComponent from '@components/forms/FileInputComponent'
-	import FileInfoRow from '@widgets/file/FileInfoRow'
-	import RadioInputComponent from '@components/forms/RadioInputComponent'
-	import SelectInputComponent from '@components/forms/SelectInputComponent'
-	import SimpleFileInputComponent from '@components/forms/SimpleFileInputComponent'
-	import StarsInputComponent from '@components/forms/StarsInputComponent'
-	import SwitchComponent from '@components/forms/SwitchComponent'
-	import TextareaInputComponent from '@components/forms/TextareaInputComponent'
-	import TextInputComponent from '@components/forms/TextInputComponent'
+	import CheckboxInputComponent from './CheckboxInputComponent.vue'
+	import SingleCheckboxInputComponent from './SingleCheckboxInputComponent.vue'
+	import MultiCheckboxInputComponent from './MultiCheckboxInputComponent.vue'
+	import EditorInputComponent from './EditorInputComponent.vue'
+	import FileInputComponent from './FileInputComponent.vue'
+	import RadioInputComponent from './RadioInputComponent.vue'
+	import SelectInputComponent from './SelectInputComponent.vue'
+	import SimpleFileInputComponent from './SimpleFileInputComponent.vue'
+	import StarsInputComponent from './StarsInputComponent.vue'
+	import SwitchComponent from './SwitchComponent.vue'
+	import TextareaInputComponent from './TextareaInputComponent.vue'
+	import TextInputComponent from './TextInputComponent.vue'
 
 	export default {
 
@@ -153,8 +154,6 @@
 			EditorInputComponent,
 
 			FileInputComponent,
-
-			FileInfoRow,
 
 			RadioInputComponent,
 

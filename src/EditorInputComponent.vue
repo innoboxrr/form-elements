@@ -37,7 +37,7 @@
 <script>
 
     import Editor from '@tinymce/tinymce-vue';
-    import SpeechRecognition from '@components/plugins/speech_recognition/SpeechRecognition'
+    import SpeechRecognition from './components/SpeechRecognition.vue'
 	
 	export default {
 
@@ -50,6 +50,16 @@
 		},
 
 		props: {
+
+			uploadUrl: {
+				type: String,
+				required: false, // Requerido solo si se suben archivos
+			},
+
+			uri: {
+				type: String,
+				default: '/'
+			},
 			
 			label: {
 				type: String,
@@ -225,9 +235,10 @@
 
                         		formData.append('visibility', 'public');
 
-                        		axios.post(route.name('api.file.create'), formData).then(res => {
+                        		/*
+                        		axios.post(uploadUrl, formData).then(res => {
 
-                        			callback(FILE_URI +  res.data.id, {text: ''});
+                        			callback(uri +  res.data.id, {text: ''});
 
                         		}).catch( error => {
 
@@ -237,6 +248,42 @@
                         			});
 
                         		});
+                        		*/
+
+								fetch(uploadUrl, {
+								
+									method: 'POST',
+								
+									body: formData
+								
+								}).then(response => {
+								
+									if (response.ok) {
+									
+										return response.json();
+									
+									} else {
+									
+										throw new Error('An error has occurred');
+									
+									}
+
+								}).then(data => {
+								
+									callback(uri + data.id, {text: ''});
+								
+								}).catch(error => {
+									
+									UIkit.notification({
+									
+										message: error.message,
+										
+										status: 'danger'
+									
+									});
+
+								});
+
 			                
 			                }
 

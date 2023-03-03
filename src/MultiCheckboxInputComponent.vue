@@ -17,7 +17,7 @@
 
 <script>
 
-    import SingleCheckboxInputComponent from '@components/forms/SingleCheckboxInputComponent'
+    import SingleCheckboxInputComponent from './SingleCheckboxInputComponent.vue'
 
     export default {
 

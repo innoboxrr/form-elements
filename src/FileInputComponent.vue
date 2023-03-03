@@ -140,14 +140,14 @@
 
 <script>
 
-    import { validateFiles } from '@js/utils/files.js'
+    import { validateFiles } from './js/files.js'
     
     export default {    
 
         props: {
             uploadUrl: {
                 type: String,
-                default: route.name('api.file.create')
+                required: true,
             },
             method: {   
                 type: String,
@@ -418,6 +418,7 @@
 
                         formData.append('visibility', this.visibility);
 
+                        /*
                         axios.post(this.uploadUrl, formData).then( res => {
 
                             file.uploaded = true;
@@ -437,6 +438,30 @@
                             console.log(error.response);
 
                         });
+                        */
+                        fetch(this.uploadUrl, {
+                          method: 'POST',
+                          body: formData
+                        })
+                        .then(response => {
+                          if (response.ok) {
+                            return response.json();
+                          } else {
+                            throw new Error('An error has occurred');
+                          }
+                        })
+                        .then(data => {
+                          file.uploaded = true;
+                          file.path = data.path;
+                          file.id = data.id;
+                          this.currentOnUpload = false;
+                          this.$emit('updateFileList', this.fileList);
+                          this.$emit('endUpload', true);
+                        })
+                        .catch(error => {
+                          console.log(error);
+                        });
+
 
                     } else {
 

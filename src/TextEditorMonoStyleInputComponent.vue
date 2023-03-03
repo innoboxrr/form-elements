@@ -74,8 +74,8 @@
 
 <script>
 	
-	import EditorInputComponent from '@components/forms/EditorInputComponent'
-	import SpeechRecognition from '@components/plugins/speech_recognition/SpeechRecognition'
+	import EditorInputComponent from './EditorInputComponent.vue'
+	import SpeechRecognition from './components/SpeechRecognition.vue'
 
 	export default {
 

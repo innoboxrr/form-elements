@@ -1,7 +1,9 @@
 <template>
 	
 	<div class="uk-margin">
+
         <label>
+        
             <input 
                 class="uk-checkbox" 
                 :class="customClass"
@@ -17,6 +19,7 @@
                 <slot></slot>
 
         </label>
+        
     </div>
 
 </template>
