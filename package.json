@@ -1,0 +1,25 @@
+{
+  "name": "innoboxrr-form-elements",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/innoboxrr/form-elements.git"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "form",
+    "elements"
+  ],
+  "author": "Homero Raul Vargas Cruz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/innoboxrr/form-elements/issues"
+  },
+  "homepage": "https://github.com/innoboxrr/form-elements#readme"
+}
