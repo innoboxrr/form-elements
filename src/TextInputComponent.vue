@@ -42,8 +42,6 @@
 
 <script>
 	
-	import Inputmask from "inputmask"; // Docs: https://www.npmjs.com/package/inputmask
-
 	export default {
 
 		props: {
@@ -152,38 +150,6 @@
 			iconAttr() {
 
 				return (this.icon == "") ? "" : `icon: ${this.icon}`;
-
-			}
-
-		},
-
-		methods: {
-
-			initMask() {
-
-				if(this.mask != null) {
-
-
-					Inputmask({
-
-						onincomplete: (key, result) => {
-
-							if (!result) {
-
-								this.value = '';
-
-								UIkit.notification({
-									message: 'Por favor escriba el campo completo',
-									status: 'danger'
-								})
-
-							};
-
-						}
-
-					}).mask(document.querySelectorAll('input[data-uid="' + this.uid + '"]'));
-
-				}
 
 			}
 

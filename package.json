@@ -1,6 +1,6 @@
 {
   "name": "innoboxrr-form-elements",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -23,18 +23,17 @@
   },
   "homepage": "https://github.com/innoboxrr/form-elements#readme",
   "dependencies": {
-    "vue": "^3.2.39",
-    "codemirror": "^6.0.1",
     "@codemirror/lang-css": "^6.0.0",
     "@codemirror/lang-html": "^6.1.1",
     "@codemirror/lang-javascript": "^6.0.2",
     "@codemirror/lang-json": "^6.0.0",
     "@codemirror/theme-one-dark": "^6.1.0",
-    "vue-codemirror": "^6.1.1",
+    "@tinymce/tinymce-vue": "^5.0.0",
+    "codemirror": "^6.0.1",
     "lightvue": "^1.5.1",
-    "vue-tel-input": "^6.0.5",
-    "@tinymce/tinymce-vue": "^4.0.5",
+    "vue": "^3.2.39",
+    "vue-codemirror": "^6.1.1",
     "vue-select": "^4.0.0-beta.3",
-    "inputmask": "^5.0.8-beta.17"
+    "vue-tel-input": "^6.0.5"
   }
 }
