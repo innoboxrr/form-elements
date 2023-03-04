@@ -104,7 +104,7 @@
 
                 view: undefined,
 
-                value: `console.log('Hello, world!')`,
+                // value: `console.log('Hello, world!')`,
 
             }
 

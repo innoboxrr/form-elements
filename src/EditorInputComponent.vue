@@ -22,7 +22,7 @@
             	:initial-value="initialValue"
             	:inline="inline"
             	:output-format="output"
-            	tinymce-script-src="/assets/plugins/tinymce/tinymce.min.js"
+            	:tinymce-script-src="tinymceCdn"
             	class="uk-textarea uk-form-large uk-border-rounded editor" 
             	v-model="value" />
 
@@ -96,6 +96,11 @@
 				type: String,
 				default: 'html' // html, text
 			},
+
+			tinymceCdn: {
+				type: String,
+				default: 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.3.2/tinymce.min.js'
+				},
 			
 			file: {
 				type: Boolean,
