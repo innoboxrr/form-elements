@@ -27,7 +27,7 @@
             	:max="max_length"
             	:step="steps"
             	:readonly="readonly"
-            	:data-inputmask="mask"
+            	v-format="maskFormat"
             	@keyup.enter="$emit('enter', $event)"
             	@input="$emit('input', $event)"
             	@focus="$emit('focus', $event)"
@@ -41,6 +41,8 @@
 </template>
 
 <script>
+
+	import { formatDirective } from 'innoboxrr-maskjs'
 	
 	export default {
 
@@ -98,9 +100,9 @@
 				type: Boolean,
 				default: null
 			},
-			mask:{
-				type: String,
-				default: null,
+			maskFormat:{
+				type: Object,
+				default: {},
 			},
 			modelValue: {
 				default: ""
@@ -109,6 +111,12 @@
 
 		emits: ['update:modelValue', 'enter', 'focus', 'blur', 'input'],
 
+		directives: {
+
+			format: formatDirective
+
+		},
+
 		data() {
 
 			return {
@@ -116,12 +124,6 @@
 				uid: chance.hash(),
 
 			}
-
-		},
-
-		mounted() {
-
-			this.initMask();
 
 		},
 

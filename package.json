@@ -1,6 +1,6 @@
 {
   "name": "innoboxrr-form-elements",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,7 @@
     "@codemirror/theme-one-dark": "^6.1.0",
     "@tinymce/tinymce-vue": "^5.0.0",
     "codemirror": "^6.0.1",
+    "innoboxrr-maskjs": "^1.0.2",
     "lightvue": "^1.5.1",
     "vue": "^3.2.39",
     "vue-codemirror": "^6.1.1",
