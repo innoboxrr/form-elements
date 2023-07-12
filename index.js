@@ -19,6 +19,7 @@ import SwitchComponent from './src/SwitchComponent.vue'
 import TextareaInputComponent from './src/TextareaInputComponent.vue'
 import TextEditorMonoStyleInputComponent from './src/TextEditorMonoStyleInputComponent.vue'
 import TextInputComponent from './src/TextInputComponent.vue'
+import ModelSearchInputComponent from './src/ModelSearchInputComponent.vue'
 
 export {
 	ButtonComponent,
@@ -42,4 +43,5 @@ export {
 	TextareaInputComponent,
 	TextEditorMonoStyleInputComponent,
 	TextInputComponent,
+	ModelSearchInputComponent,
 }
