@@ -916,10 +916,10 @@
 			},
 			
 			search(loading, search) {
-
+				
 				return new Promise((resolve, reject) => {
 
-					axios[this.method](route.name(this.routeName), {
+					const requestData = {
 
 						_token: csrf_token,
 
@@ -929,7 +929,19 @@
 
 						...this.searchParams
 
-					}).then( res => {
+					};
+
+					const config = {
+
+						url: route.name(this.routeName),
+
+						method: this.method,
+
+						[this.method === 'post' ? 'data' : 'params']: requestData
+
+					};
+
+					axios(config).then(res => {
 
 						this.$emit('search', res.data);
 
@@ -937,9 +949,9 @@
 
 						resolve(res);
 
-					}).catch( error => {
+					}).catch(error => {
 
-						reject( error );
+						reject(error);
 
 					});
 
