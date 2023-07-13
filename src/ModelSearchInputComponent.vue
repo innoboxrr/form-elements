@@ -8,7 +8,8 @@
             :placeholder="placeholderStr"
             :ajax="true"
             :filterable="false"
-            :route-name="routeName"
+            :method="method"
+            :route="route"
             :q="q"
             :search-params="searchParams"
             :reduce="reduce"
@@ -49,9 +50,14 @@
                 required: true,
             },
 
-            routeName: {
+            route: {
                 type: String,
                 required: true,
+            },
+
+            method: {
+                type: String,
+                default: 'get',
             },
 
             q: {
