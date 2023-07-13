@@ -22,7 +22,7 @@
 
 <script>
 
-    import SelectSearchInputComponent from './SelectSearchInputComponent'
+    import SelectSearchInputComponent from './SelectSearchInputComponent.vue'
     
     export default {
 
