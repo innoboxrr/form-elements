@@ -49,7 +49,7 @@
 				:input-value="inputValue"
 				:ajax="ajax"
 				:method="method"
-				:route-name="routeName"
+				:route="route"
 				:search-params="searchParams"
 				:q="q"
             	v-model="value"
@@ -808,12 +808,12 @@
 				},
 
 				/**
-				 * @routeName
+				 * @route
 				 * 
 				 * Se trata de la URL a donde se va a realizar la búsqueda
 				 * 
 				 */
-				routeName: {
+				route: {
 					type: String,
 					default: '',
 				},
@@ -933,7 +933,7 @@
 
 					const config = {
 
-						url: route.name(this.routeName),
+						url: this.route,
 
 						method: this.method,
 
