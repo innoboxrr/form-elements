@@ -8,7 +8,7 @@
             :placeholder="placeholderStr"
             :ajax="true"
             :filterable="false"
-            :method="methos"
+            :method="method"
             :route="route"
             :q="q"
             :search-params="searchParams"
