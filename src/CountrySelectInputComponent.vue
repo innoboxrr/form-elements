@@ -6,17 +6,23 @@
 	
 	<div class="uk-margin">
 
-        <vue-tel-input 
-        	:class="{ error: !this.isValid && phone.length != 0 }"
-        	:default-country="defaultCountry"
-        	:dropdown-options="dropdownOptions"
-        	:input-options="inputOptions"
-        	:preferredCountries="[/* iso codes */]"
-        	:valid-characters-only="true"
-        	@country-changed="countryChanged"
-        	@blur="blur"
-        	v-model="phone">
-        </vue-tel-input>
+		<div class="uk-inline uk-width-1-1">
+
+        	<label class="uk-form-label">{{ label }}</label>
+
+	        <vue-tel-input 
+	        	:class="{ error: !this.isValid && phone.length != 0 }"
+	        	:default-country="defaultCountry"
+	        	:dropdown-options="dropdownOptions"
+	        	:input-options="inputOptions"
+	        	:preferredCountries="[/* iso codes */]"
+	        	:valid-characters-only="true"
+	        	@country-changed="countryChanged"
+	        	@blur="blur"
+	        	v-model="phone">
+	        </vue-tel-input>
+
+	    </div>
 
     </div>
 
@@ -36,6 +42,12 @@
 		},
 
 		props: {
+
+			label: {
+				type: String,
+				required: false,
+				default: ''
+			},
 
 			defaultPhone: {
 				type: [String, Number],
@@ -199,6 +211,11 @@
 	    outline: none !important;
 	    border-color: #ffd0d0;
     	box-shadow: 0 0 3px #ff6d6d;;
+	}
+
+	.vue-tel-input:focus-within {
+	    box-shadow: none;
+	    border-color: #66afe9;
 	}
 
 </style>
