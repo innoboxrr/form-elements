@@ -17,6 +17,7 @@
 	        	:input-options="inputOptions"
 	        	:preferredCountries="[/* iso codes */]"
 	        	:valid-characters-only="true"
+	        	:disabled="disabled"
 	        	@country-changed="countryChanged"
 	        	@blur="blur"
 	        	v-model="phone">
@@ -58,6 +59,11 @@
 				type: [String, Number],
 				default: null
 			},	
+
+			disabled: {
+				type: Boolean,
+				default: false,
+			},
 
 			dropdownOptions: {
 				type: Object,
