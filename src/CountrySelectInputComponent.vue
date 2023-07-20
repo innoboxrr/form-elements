@@ -90,7 +90,7 @@
 					showDialCode: false,
 					placeholder: 'Ingresa un número telefónico',
 					readonly: false,
-					required: true,
+					required: false,
 					tabindex: 0,
 					type:  'tel',
 					styleClasses: 'uk-input uk-form-large uk-border-rounded' ,
