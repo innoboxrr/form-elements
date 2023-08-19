@@ -113,13 +113,8 @@
 			},
 
 			plugins:{
-				type: Array,
-				default: [
-	                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
-	                "searchreplace wordcount visualblocks visualchars code fullscreen",
-	                "insertdatetime media nonbreaking table directionality",
-	                "template paste textpattern codesample"
-	            ]      
+				type: String,
+				default: "advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking table directionality template paste textpattern codesample"
 			},
 
 			toolbar: {
