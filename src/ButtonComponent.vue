@@ -3,7 +3,6 @@
 	<div class="uk-margin">
 
         <button 
-            class="uk-button button"
             :class="customClass"
             :disabled="disabled">
 
@@ -23,7 +22,7 @@
 			customClass: {
 				type: String,
 				required: false,
-				default: ""
+				default: "uk-button uk-width-1-1 button"
 			},
 			disabled: {
 				type: Boolean,

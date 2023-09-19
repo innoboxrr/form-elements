@@ -65,7 +65,7 @@
 
         </label>
 
-        <div v-else-if="currentOnUpload" :class="`${dropzoneClass} ${onDropClass} dropzone-disable`">
+        <div v-else-if="currentOnUpload" :class="`${dropzoneClass} ${onDropClass} dropzone-disable dark:text-white`">
 
             {{ onUploadMessage }}
 

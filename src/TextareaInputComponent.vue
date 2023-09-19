@@ -4,7 +4,7 @@
 
         <div class="uk-inline uk-width-1-1">
 
-        	<label class="uk-form-label">{{ label }}</label>
+        	<label class="uk-form-label ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ label }}</label>
 
             <textarea
             	class="uk-textarea uk-form-large uk-border-rounded" 

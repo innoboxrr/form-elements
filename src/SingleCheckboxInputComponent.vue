@@ -2,7 +2,7 @@
 
     <div class="uk-margin">
 
-        <label :for="id + '_' + label">
+        <label :for="id + '_' + label" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
 
         <input
             :id="id + '_' + label"
