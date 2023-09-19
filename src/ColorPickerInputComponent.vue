@@ -94,18 +94,3 @@
     }
 
 </script>
-
-<style>
-    
-    .lv-input__label {
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #333;
-        font-size: 0.875rem;
-    }
-
-    .lv-overlaypanel {
-        z-index: 1015 !important;
-    }
-
-</style>

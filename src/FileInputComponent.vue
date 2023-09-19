@@ -46,9 +46,9 @@
                 @drop.prevent="handleDrop"
                 @dragleave.prevent="handleDragLeave">    
 
-                    <template v-if="!onDrop" class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ message }}</template>
+                    <p v-if="!onDrop" class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ message }}</p>
 
-                    <template v-else class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ onDropMessage }}</template>
+                    <p v-else class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ onDropMessage }}</p>
 
                     <slot v-if="!onDrop" name="normalSlot"></slot>
 
