@@ -6,8 +6,7 @@
 
         	<label class=" ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ label }}</label>
 
-            <select 
-            	class="uk-select uk-form-large uk-border-rounded" 
+            <select  
             	:class="customClass"
             	:name="name"
             	:multiple="multiple"
@@ -38,6 +37,7 @@
 			customClass: {
 				type: String,
 				required: false,
+				default: 'uk-select uk-form-large uk-border-rounded'
 			},
 			name: {
 				type: String,

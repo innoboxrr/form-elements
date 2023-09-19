@@ -12,8 +12,7 @@
             	:uk-icon="iconAttr"></span>
 
             <input 
-            	:data-uid="uid"
-            	class="uk-input uk-form-large uk-border-rounded" 
+            	:data-uid="uid" 
             	:class="customClass"
             	:type="type" 
             	:name="name"
@@ -60,6 +59,7 @@
 			customClass: {
 				type: String,
 				required: false,
+				default: 'uk-input uk-form-large uk-border-rounded'
 			},
 			type: {
 				type: String,

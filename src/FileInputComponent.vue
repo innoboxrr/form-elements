@@ -46,9 +46,9 @@
                 @drop.prevent="handleDrop"
                 @dragleave.prevent="handleDragLeave">    
 
-                    <template v-if="!onDrop">{{ message }}</template>
+                    <template v-if="!onDrop" class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ message }}</template>
 
-                    <template v-else>{{ onDropMessage }}</template>
+                    <template v-else class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ onDropMessage }}</template>
 
                     <slot v-if="!onDrop" name="normalSlot"></slot>
 
@@ -75,7 +75,7 @@
 
         <div v-else-if="maxFilesReached">
             
-            <div v-if="!hideOnMaxFilesReached" :class="`${dropzoneClass} ${onDropClass} dropzone-disable`">
+            <div v-if="!hideOnMaxFilesReached" :class="`${dropzoneClass} ${onDropClass} dropzone-disable ml-2 text-sm font-medium text-gray-900 dark:text-white`">
                 
                 Máximo número de archivos alcanzados
 
@@ -115,7 +115,7 @@
 
         <div v-if="errors.length > 0">
             
-            <p>{{ 'Validation errors' }}: </p>
+            <p class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'Validation errors' }}: </p>
 
             <ul>
                 
