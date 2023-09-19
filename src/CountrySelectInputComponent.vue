@@ -213,7 +213,7 @@
 	
 
 	.vue-tel-input.error:focus-within { 
-		border: 1px solid #e5e5e5;
+		border: 3px solid #e5e5e5;
 	    outline: none !important;
 	    border-color: #ffd0d0;
     	box-shadow: 0 0 3px #ff6d6d;;
