@@ -6,7 +6,7 @@
 
         <div class="uk-inline uk-width-1-1">
 
-        	<label class="uk-form-label ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ inputLabel }}</label>
+        	<label class=" ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ inputLabel }}</label>
 
             <v-select 
             	:class="customClass"

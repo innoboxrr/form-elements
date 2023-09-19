@@ -4,7 +4,7 @@
 
         <div class="uk-inline uk-width-1-1">
 
-            <label class="uk-form-label">{{ label }}</label>
+            <label class="">{{ label }}</label>
 
             <codemirror
                 :placeholder="placeholder"

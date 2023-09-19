@@ -43,7 +43,7 @@
 
 				<div v-if="props.type == 'radio'">
 					
-					<div class="uk-margin"><label class="uk-form-label">{{ props.label }}</label></div>
+					<div class="uk-margin"><label class="">{{ props.label }}</label></div>
 
 					<div v-for="option in props.options">
 						
@@ -79,7 +79,7 @@
 
 				<div v-if="props.type == 'checkbox'">
 					
-					<div class="uk-margin"><label class="uk-form-label">{{ props.label }}</label></div>
+					<div class="uk-margin"><label class="">{{ props.label }}</label></div>
 
 					<multi-checkbox-input-component 
 						:id="id"
@@ -93,7 +93,7 @@
 					
 					<div class="uk-margin">
 
-						<label class="uk-form-label">{{ props.label }}</label>
+						<label class="">{{ props.label }}</label>
 
 					</div>
 
