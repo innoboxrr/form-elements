@@ -4,6 +4,7 @@
         
         <!-- model_id -->
         <select-search-input-component
+            :custom-class="customClass"
             :input-label="labelStr"
             :placeholder="placeholderStr"
             :ajax="true"
@@ -34,6 +35,11 @@
         },
 
         props: {
+
+            customClass: {
+                type: String,
+                required: false,
+            },
 
             hideOnEmit: {
                 type: Boolean,
