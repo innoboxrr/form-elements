@@ -964,26 +964,3 @@
 	}
 
 </script>
-
-<style scoped>
-	
-	.uk-form-large:not(textarea):not([multiple]):not([size]) {
-	    padding-left: 0px; 
-	    padding-right: 0px; 
-	}
-
-	::v-deep(.vs__dropdown-toggle) {
-	    border: 1px solid #e5e5e5 !important;
-	    border-radius: 5px !important;
-	    height: 50px !important;
-	}
-
-	::v-deep(.vs__dropdown-menu) {
-	    border: 1px solid #e5e5e5 !important;
-	}
-
-	::v-deep(.v-select.vs--single.vs--searchable) {
-	    background: #fff;
-	}
-
-</style>
