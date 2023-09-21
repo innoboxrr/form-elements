@@ -964,3 +964,30 @@
 	}
 
 </script>
+
+<style>
+
+	.vs__search {
+        margin: 8px 0 0 !important;
+    }
+
+    .dark .vs__selected {
+        color: #fff;
+    }
+
+    .dark .vs__search::placeholder,
+    .dark .vs__dropdown-toggle,
+    .dark .vs__dropdown-menu {
+      background-color: rgb(55 65 81 / 1);
+      border: none;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .dark .vs__clear,
+    .dark .vs__open-indicator {
+      fill: #fff;
+      color: #fff;
+    }
+
+</style>
