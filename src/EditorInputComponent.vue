@@ -204,6 +204,8 @@
 			            paste_data_images: false,
 
 			            skin: this.isDarkMode ? 'oxide-dark' : 'oxide',
+
+			            content_css: this.isDarkMode ? 'dark' : 'default',
 			            
 			            image_advtab: true,
 
@@ -343,6 +345,8 @@
 			            paste_data_images: false,
 
 			            skin: this.isDarkMode ? 'oxide-dark' : 'oxide',
+
+			            content_css: this.isDarkMode ? 'dark' : 'default',
 
 			        };
 
