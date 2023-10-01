@@ -157,6 +157,12 @@
 
 			},
 
+			isDarkMode() {
+				
+				return document.body.classList.contains('dark');
+
+			},
+
 			config() {
 
 				if(this.file) {
@@ -196,6 +202,8 @@
 			            relative_urls: false,
 
 			            paste_data_images: false,
+
+			            skin: this.isDarkMode ? 'oxide-dark' : 'oxide',
 			            
 			            image_advtab: true,
 
@@ -333,6 +341,8 @@
 			            relative_urls: false,
 
 			            paste_data_images: false,
+
+			            skin: this.isDarkMode ? 'oxide-dark' : 'oxide',
 
 			        };
 
