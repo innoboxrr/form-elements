@@ -972,22 +972,22 @@
     }
 
     .dark .vs__selected {
-        color: #fff;
+        color: #fff !important;
     }
 
     .dark .vs__search::placeholder,
     .dark .vs__dropdown-toggle,
     .dark .vs__dropdown-menu {
-      background-color: rgb(55 65 81 / 1);
-      border: none;
-      color: #fff;
-      font-size: 14px;
+      background-color: rgb(55 65 81 / 1) !important;
+      border: none !important;
+      color: #fff !important;
+      font-size: 14px !important;
     }
 
     .dark .vs__clear,
     .dark .vs__open-indicator {
-      fill: #fff;
-      color: #fff;
+      fill: #fff !important;
+      color: #fff !important;
     }
 
 </style>
