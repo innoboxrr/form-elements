@@ -130,6 +130,10 @@
 
                     this.showForm = !this.hideOnEmit;
 
+                } else {
+
+                    this.$emit('submit', val);
+                    
                 }
 
             }
