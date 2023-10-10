@@ -16,6 +16,7 @@
             :reduce="reduce"
             :get-option-label="getOptionLabel"
             :min-search-length="0"
+            :multiple="multiple"
             v-model="model_id" />  
 
     </div>
@@ -84,7 +85,12 @@
             getOptionLabel: {
                 type: Function,
                 default: option => `ID: ${option.id}`
-            }
+            },
+
+            multiple: {
+                type: Boolean,
+                default: false
+            },
 
         },
 
