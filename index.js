@@ -7,6 +7,7 @@ import ColorPickerInputComponent from './src/ColorPickerInputComponent.vue'
 import CountrySelectInputComponent from './src/CountrySelectInputComponent.vue'
 import EditorInputComponent from './src/EditorInputComponent.vue'
 import FileInputComponent from './src/FileInputComponent.vue'
+import FileDropInputComponent from './src/FileDropInputComponent.vue'
 import MultiCheckboxInputComponent from './src/MultiCheckboxInputComponent.vue'
 import PolymorphicInputComponent from './src/PolymorphicInputComponent.vue'
 import RadioInputComponent from './src/RadioInputComponent.vue'
@@ -31,6 +32,7 @@ export {
 	CountrySelectInputComponent,
 	EditorInputComponent,
 	FileInputComponent,
+	FileDropInputComponent,
 	MultiCheckboxInputComponent,
 	PolymorphicInputComponent,
 	RadioInputComponent,
