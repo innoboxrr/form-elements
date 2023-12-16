@@ -316,6 +316,9 @@
 
 						setup: function (editor) {
 							editor.on('OpenWindow', function () {
+
+								console.log('open');
+								
 								function tryFocus() {
 									var firstElement = document.querySelector('.tox-form input, .tox-form textarea, .tox-form select');
 									if (firstElement) {
@@ -373,6 +376,9 @@
 
 						setup: function (editor) {
 							editor.on('OpenWindow', function () {
+
+								console.log('open');
+
 								function tryFocus() {
 									var firstElement = document.querySelector('.tox-form input, .tox-form textarea, .tox-form select');
 									if (firstElement) {
