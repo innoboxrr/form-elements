@@ -316,13 +316,24 @@
 
 						setup: function (editor) {
 							editor.on('OpenWindow', function () {
-								setTimeout(function () {
-									// Selecciona el primer input, textarea o select dentro de tox-form
+								function tryFocus() {
 									var firstElement = document.querySelector('.tox-form input, .tox-form textarea, .tox-form select');
 									if (firstElement) {
 										firstElement.focus();
+										return true;
 									}
-								}, 100); // Un pequeño retraso para asegurar que la ventana esté completamente cargada
+									return false;
+								}
+
+								// Intenta enfocar inmediatamente y luego varias veces en intervalos
+								if (!tryFocus()) {
+									var attempts = 10;
+									var interval = setInterval(function () {
+										if (tryFocus() || --attempts <= 0) {
+											clearInterval(interval);
+										}
+									}, 50);
+								}
 							});
 						}
 
@@ -362,13 +373,24 @@
 
 						setup: function (editor) {
 							editor.on('OpenWindow', function () {
-								setTimeout(function () {
-									// Selecciona el primer input, textarea o select dentro de tox-form
+								function tryFocus() {
 									var firstElement = document.querySelector('.tox-form input, .tox-form textarea, .tox-form select');
 									if (firstElement) {
 										firstElement.focus();
+										return true;
 									}
-								}, 100); // Un pequeño retraso para asegurar que la ventana esté completamente cargada
+									return false;
+								}
+
+								// Intenta enfocar inmediatamente y luego varias veces en intervalos
+								if (!tryFocus()) {
+									var attempts = 10;
+									var interval = setInterval(function () {
+										if (tryFocus() || --attempts <= 0) {
+											clearInterval(interval);
+										}
+									}, 50);
+								}
 							});
 						}
 
