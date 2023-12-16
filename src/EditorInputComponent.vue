@@ -114,7 +114,7 @@
 
 			plugins:{
 				type: String,
-				default: "advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking table directionality template paste textpattern codesample"
+				default: "advlist autolink lists link image charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking table directionality template codesample"
 			},
 
 			toolbar: {
