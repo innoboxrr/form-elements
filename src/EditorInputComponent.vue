@@ -23,7 +23,7 @@
             	:inline="inline"
             	:output-format="output"
             	:tinymce-script-src="tinymceCdn"
-            	class="uk-textarea uk-form-large uk-border-rounded editor" 
+            	class="editor" 
             	v-model="value" />
 
             
@@ -314,6 +314,18 @@
 
 			            },
 
+						setup: function (editor) {
+							editor.on('OpenWindow', function () {
+								setTimeout(function () {
+									// Selecciona el primer input, textarea o select dentro de tox-form
+									var firstElement = document.querySelector('.tox-form input, .tox-form textarea, .tox-form select');
+									if (firstElement) {
+										firstElement.focus();
+									}
+								}, 100); // Un pequeño retraso para asegurar que la ventana esté completamente cargada
+							});
+						}
+
 			        };
 
 				} else {
@@ -347,6 +359,18 @@
 			            skin: this.isDarkMode ? 'oxide-dark' : 'oxide',
 
 			            content_css: this.isDarkMode ? 'dark' : 'default',
+
+						setup: function (editor) {
+							editor.on('OpenWindow', function () {
+								setTimeout(function () {
+									// Selecciona el primer input, textarea o select dentro de tox-form
+									var firstElement = document.querySelector('.tox-form input, .tox-form textarea, .tox-form select');
+									if (firstElement) {
+										firstElement.focus();
+									}
+								}, 100); // Un pequeño retraso para asegurar que la ventana esté completamente cargada
+							});
+						}
 
 			        };
 
