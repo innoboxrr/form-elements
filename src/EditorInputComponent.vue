@@ -342,7 +342,7 @@
 							});
 						},
 
-						...extraConfig,
+						...this.extraConfig,
 
 			        };
 
@@ -404,7 +404,7 @@
 							});
 						},
 
-						...extraConfig,
+						...this.extraConfig,
 
 			        };
 
