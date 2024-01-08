@@ -42,11 +42,8 @@
 	export default {
 
 		components: {
-			
 			Editor,
-
 			SpeechRecognition,
-
 		},
 
 		props: {
@@ -135,6 +132,11 @@
 			modelValue: {
 				type: String,
 				default: ""
+			},
+
+			extraConfig: {
+				type: Object,
+				default: () => {}
 			}
 			
 		},
@@ -338,7 +340,9 @@
 									}, 50);
 								}
 							});
-						}
+						},
+
+						...extraConfig,
 
 			        };
 
@@ -398,7 +402,9 @@
 									}, 50);
 								}
 							});
-						}
+						},
+
+						...extraConfig,
 
 			        };
 
