@@ -5,9 +5,10 @@
         <div class="uk-inline uk-width-1-1">
 
         	<label class=" ml-2 text-sm font-medium text-gray-900 dark:text-white">
-				
+				<span v-if="help" class="cursor-pointer">
+					<i :uk-tooltip="`title: ${help}`" class="fa-solid fa-circle-question"></i>
+				</span>
 				{{ label }}
-
 			</label>
 
 			<speech-recognition 
@@ -47,6 +48,12 @@
 		},
 
 		props: {
+
+			help: {
+				type: String,
+				required: false,
+				default: null
+			},
 
 			uploadUrl: {
 				type: String,

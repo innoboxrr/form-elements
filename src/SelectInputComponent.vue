@@ -4,7 +4,12 @@
 
         <div class="uk-inline uk-width-1-1">
 
-        	<label class=" ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ label }}</label>
+        	<label class=" ml-2 text-sm font-medium text-gray-900 dark:text-white">
+				<span v-if="help" class="cursor-pointer">
+					<i :uk-tooltip="`title: ${help}`" class="fa-solid fa-circle-question"></i>
+				</span>
+				{{ label }}
+			</label>
 
             <select  
             	:class="customClass"
@@ -33,6 +38,11 @@
 				type: String,
 				required: false,
 				default: ''
+			},
+			help: {
+				type: String,
+				required: false,
+				default: null
 			},
 			customClass: {
 				type: String,
