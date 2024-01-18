@@ -8,7 +8,7 @@
         
         <i class="fa-solid fa-photo-film fa-2xl text-slate-500 my-3 dark:text-slate-200"></i>
         
-        <p class="text-slate-700 text-sm pt-4 dark:text-slate-300 pointer">
+        <p class="text-slate-400 text-sm pt-2 dark:text-slate-200 pointer">
             {{ mainText }}
         </p>
         
