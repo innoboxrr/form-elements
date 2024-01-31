@@ -17,6 +17,7 @@
             :get-option-label="getOptionLabel"
             :min-search-length="0"
             :multiple="multiple"
+            :noOptionsText="noOptionsText"
             v-model="model_id" />  
 
     </div>
@@ -90,6 +91,11 @@
             multiple: {
                 type: Boolean,
                 default: false
+            },
+
+            noOptionsText: {
+                type: String,
+                default: 'Nothing results found',
             },
 
         },

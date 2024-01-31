@@ -59,6 +59,9 @@
 				:q="q"
             	v-model="value"
             	@search="onSearch">
+				<template #no-options="{ search, searching, loading }">
+					{{ noOptionsText }}
+				</template>
             </v-select>
 
         </div>
@@ -861,6 +864,13 @@
 				minSearchLength: {
 					type: Number,
 					default: 2
+				},
+			
+			// Slots
+
+				noOptionsText: {
+					type: String,
+					default: 'Nothing here.'
 				},
 
 			// Vue Model
