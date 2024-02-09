@@ -269,7 +269,7 @@
                         		});
                         		*/
 
-								fetch(uploadUrl, {
+								fetch(this.uploadUrl, {
 								
 									method: 'POST',
 								
