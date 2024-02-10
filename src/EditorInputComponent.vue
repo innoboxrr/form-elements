@@ -57,7 +57,7 @@
 
 			uploadUrl: {
 				type: String,
-				required: false, // Requerido solo si se suben archivos
+				default: null, // Requerido solo si se suben archivos
 			},
 
 			uri: {
@@ -144,11 +144,20 @@
 			extraConfig: {
 				type: Object,
 				default: () => {}
+			},
+
+			onFileUploadSuccess:{
+				type: Function,
+				default: null
 			}
 			
 		},
 
 		emits: ['update:modelValue'],
+
+		mounted(){
+			console.log(this.uploadUrl);
+		},
 
 		computed: {
 
@@ -220,7 +229,7 @@
 
 			            file_picker_types: 'image file media',
 
-			            file_picker_callback: function(callback, value, meta) {
+			            file_picker_callback: (callback, value, meta) => {
 
 			                // Tipo de archivos
 			                let filetype = meta.filetype;
@@ -241,7 +250,7 @@
 			                input.click();
 
 			                // Evento a lanzar cuendo el input tenga un nuevo archivo
-			                input.onchange = function() {
+			                input.onchange = () => {
 
 								// Instanciar un nuevo objeto de tipo formData 
 		                        var formData = new FormData();
@@ -288,9 +297,13 @@
 									}
 
 								}).then(data => {
-								
-									callback(uri + data.id, {text: ''});
-								
+									if (this.onFileUploadSuccess) {
+										// Llamar a la función prop con los datos necesarios
+										this.onFileUploadSuccess(data, callback, this.uri);
+									} else {
+										// O manejar la respuesta por defecto si no se proporciona ninguna función
+										callback(this.uri + data.id, {text: ''});
+									}								
 								}).catch(error => {
 									
 									UIkit.notification({
