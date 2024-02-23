@@ -155,10 +155,6 @@
 
 		emits: ['update:modelValue'],
 
-		mounted(){
-			console.log(this.uploadUrl);
-		},
-
 		computed: {
 
 			value: {
