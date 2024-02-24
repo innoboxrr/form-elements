@@ -23,11 +23,9 @@
             	:initial-value="initialValue"
             	:inline="inline"
             	:output-format="output"
-            	:tinymce-script-src="tinymceCdn"
+            	:tinymce-script-src="tinyCDN"
             	class="editor" 
             	v-model="value" />
-
-            
 
         </div>
 
@@ -100,11 +98,11 @@
 				type: String,
 				default: 'html' // html, text
 			},
-
+			
 			tinymceCdn: {
 				type: String,
 				default: 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.3.2/tinymce.min.js'
-				},
+			},
 			
 			file: {
 				type: Boolean,
@@ -154,6 +152,12 @@
 		},
 
 		emits: ['update:modelValue'],
+
+		data() {
+			return {
+				tinyCDN: this.localTinyMceCdn ?? this.tinymceCdn,
+			}
+		},
 
 		computed: {
 
