@@ -454,6 +454,7 @@
                           file.uploaded = true;
                           file.path = data.path;
                           file.id = data.id;
+                          file.response = data;
                           this.currentOnUpload = false;
                           this.$emit('updateFileList', this.fileList);
                           this.$emit('endUpload', true);
