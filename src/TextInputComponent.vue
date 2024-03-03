@@ -9,7 +9,7 @@
 					<i :uk-tooltip="`title: ${help}`" class="fa-solid fa-circle-question"></i>
 				</span>
 				{{ label }}
-			</label>
+			</label> 
 
             <span 
             	v-if="hasIcon"
