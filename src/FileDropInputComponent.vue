@@ -6,7 +6,7 @@
         @dragover.prevent 
         class="mb-2 flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-slate-50 dark:hover:border-slate-400 dark:hover:bg-slate-500 pointer">
         
-        <i class="fa-solid fa-photo-film fa-2xl text-slate-500 my-3 dark:text-slate-200"></i>
+        <i class="fa-solid fa-photo-film text-slate-500 my-3 dark:text-slate-200"></i>
         
         <p class="text-slate-400 text-sm pt-2 dark:text-slate-200 pointer">
             {{ mainText }}
