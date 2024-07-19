@@ -21,6 +21,7 @@ import TextareaInputComponent from './src/TextareaInputComponent.vue'
 import TextEditorMonoStyleInputComponent from './src/TextEditorMonoStyleInputComponent.vue'
 import TextInputComponent from './src/TextInputComponent.vue'
 import ModelSearchInputComponent from './src/ModelSearchInputComponent.vue'
+import TagsInputComponent from './src/TagsInputComponent.vue'
 
 export {
 	ButtonComponent,
@@ -46,4 +47,5 @@ export {
 	TextEditorMonoStyleInputComponent,
 	TextInputComponent,
 	ModelSearchInputComponent,
+	TagsInputComponent
 }
