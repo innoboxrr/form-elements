@@ -54,6 +54,11 @@
             },
         },
         emits: ['update:modelValue'],
+        data() {
+            return {
+                tagify: null
+            }
+        },
         mounted() {
             this.initTagify();
         },
@@ -70,7 +75,12 @@
         methods: {
             initTagify() {
                 let tagsInput = this.$refs.tagsInput;
-                new Tagify(tagsInput);
+                this.tagify = new Tagify(tagsInput);
+                this.tagify.on('add', this.onTagChange);
+                this.tagify.on('remove', this.onTagChange);
+            },
+            onTagChange(e) {
+                this.value = this.tagify.value.map(tag => tag.value);
             }
         }
     }
