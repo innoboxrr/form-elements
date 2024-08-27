@@ -4,11 +4,11 @@
 			https://vue-tel-input.iamstevendao.com/
 			https://vuejsexamples.com/international-telephone-input-with-vue/ -->
 	
-	<div class="uk-margin">
+	<div :class="wrapperClass">
 
-		<div class="uk-inline uk-width-1-1">
+		<div :class="containerClass">
 
-        	<label class=" ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ label }}</label>
+        	<label :class="labelClass">{{ label }}</label>
 
 	        <vue-tel-input 
 	        	:class="{ error: !this.isValid && phone.length != 0 }"
@@ -43,6 +43,24 @@
 		},
 
 		props: {
+
+			wrapperClass: {
+				type: String,
+				required: false,
+				default: 'uk-margin'
+			},
+
+			containerClass: {
+				type: String,
+				required: false,
+				default: 'uk-inline uk-width-1-1'
+			},
+
+			labelClass: {
+				type: String,
+				required: false,
+				default: 'ml-2 text-sm font-medium text-gray-900 dark:text-white'
+			},
 
 			label: {
 				type: String,
