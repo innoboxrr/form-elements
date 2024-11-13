@@ -19,8 +19,10 @@
                     v-model="group[field.key]"
                     v-bind="getFieldAttributes(field, groupIndex, fieldIndex)"
                 >
-                    <template v-if="field.type === 'select'" v-for="option in field.options" :key="option.value">
-                        <option :value="option.value">{{ option.text }}</option>
+                    <template v-slot>
+                        <option v-for="option in field.options" :key="option.value" :value="option.value">
+                            {{ option.text }}
+                        </option>
                     </template>
                 </component>
             </div>
