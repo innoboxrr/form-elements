@@ -20,7 +20,11 @@
                     v-bind="getFieldAttributes(field, groupIndex, fieldIndex)"
                 >
                     <template v-slot>
-                        <option v-for="option in field.options" :key="option.value" :value="option.value">
+                        <option 
+                            v-for="option in field.options" 
+                            :key="option.value" 
+                            :value="option.value"
+                            :disabled="option.disabled">
                             {{ option.text }}
                         </option>
                     </template>
