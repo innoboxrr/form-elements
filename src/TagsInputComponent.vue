@@ -49,7 +49,7 @@
 				required: false
 			},
             modelValue: {
-                type: String,
+                type: [String, Array],
                 required: false,
             },
         },
