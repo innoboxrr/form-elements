@@ -160,7 +160,7 @@
 				if(this.validatePhone(phone)) {
 					this.isValid = true;
 					this.$emit('change', {
-						phone: phone,
+						phone: this.extractDigits(this.phone),
 						country: country,
 						isValid: true,
 					});
@@ -175,17 +175,21 @@
 				if(!this.isValid) {
 					this.phone = '';
 					this.$emit('change', {
-						phone: this.phone,
+						phone: this.extractDigits(this.phone),
 						country: this.country,
 						isValid: false,
 					});
 				}
 			},
 			validatePhone(phone) {
-				// let a = phone.length == 10;
-				let b = Number.isInteger(Number(phone));
-				return b;
-			}
+				const digits = this.extractDigits(phone);
+				console.log(digits);
+				// Valida que el número tenga 10 dígitos, o ajusta según tu requerimiento
+				return digits.length === 10;
+			},
+			extractDigits(phone) {
+				return phone.replace(/\D/g, "");
+			},
 		}
 	}
 </script>
