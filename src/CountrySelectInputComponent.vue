@@ -183,7 +183,6 @@
 			},
 			validatePhone(phone) {
 				const digits = this.extractDigits(phone);
-				console.log(digits);
 				// Valida que el número tenga 10 dígitos, o ajusta según tu requerimiento
 				return digits.length === 10;
 			},
