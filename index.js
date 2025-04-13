@@ -26,6 +26,7 @@ import AvatarInputComponent from './src/AvatarInputComponent.vue'
 import DynamicGroupInputComponent from './src/DynamicGroupInputComponent.vue'
 import FqsInputComponent from './src/FqsInputComponent.vue'
 import InputErrorComponent from './src/InputErrorComponent.vue'
+import TimezoneSelectInputComponent from './src/TimezoneSelectInputComponent.vue'
 
 export default {
     install(app) {
@@ -57,7 +58,8 @@ export default {
 		app.component('DynamicGroupInputComponent', DynamicGroupInputComponent);
 		app.component('FqsInputComponent', FqsInputComponent);
 		app.component('InputErrorComponent', InputErrorComponent);
-    }
+		app.component('TimezoneSelectInputComponent', TimezoneSelectInputComponent);
+	}
 };
 
 export {
