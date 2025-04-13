@@ -90,5 +90,6 @@ export {
 	AvatarInputComponent,
 	DynamicGroupInputComponent,
 	FqsInputComponent,
-	InputErrorComponent
+	InputErrorComponent,
+	TimezoneSelectInputComponent,
 }
