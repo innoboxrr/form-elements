@@ -45,12 +45,10 @@
 </template>
 
 <script>
-    import {
-        TextInputComponent,  
-        SelectInputComponent,
-        TextareaInputComponent,
-        EditorInputComponent
-    } from "innoboxrr-form-elements";
+    import TextInputComponent from './TextInputComponent.vue';
+    import SelectInputComponent from './SelectInputComponent.vue';
+    import TextareaInputComponent from './TextareaInputComponent.vue';
+    import EditorInputComponent from './EditorInputComponent.vue';
 
     export default {
         components: {
