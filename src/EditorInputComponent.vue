@@ -337,7 +337,7 @@
 			            },
 
 						setup: function (editor) {
-							
+
 							editor.on('OpenWindow', function () {
 
 								console.log('open');
@@ -362,14 +362,8 @@
 								}
 							});
 
-							editor.on('Change KeyUp SetContent', function () {
-								if (window.MathJax && MathJax.typesetPromise) {
-									MathJax.typesetPromise();
-								}
-							});
-
 							// ejecutar funciones adicionales después de que el editor se haya inicializado
-							if (typeof this.extraConfig.setup === 'function') {
+							if (this.extraConfig?.setup && typeof this.extraConfig.setup === 'function') {
 								this.extraConfig.setup(editor);
 							}
 						},
