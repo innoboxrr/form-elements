@@ -878,6 +878,11 @@
 				modelValue: {
 					type: [String, Number, Array, Object],
 					default: ""
+				},
+
+				debounceTime: {
+					type: Number,
+					default: 300 // valor por defecto en milisegundos
 				}
 
 		},
@@ -886,14 +891,17 @@
 
 		mounted() {},
 
+		created() {
+			this.debouncedSearchFn = this.debounce((search, loading) => {
+				this._onSearch(search, loading);
+			}, this.debounceTime);
+		},
+
 		data() {
-
 			return {
-
 				customOptions: this.options,
-
+				debouncedSearchFn: null
 			}
-
 		},
 
 		watch: {
@@ -925,65 +933,56 @@
 		methods: {
 
 			onSearch(search, loading) {
-
-				if(search.length > this.minSearchLength && this.ajax && this.validation(search)) {
-
-					loading(true);
-
-					this.search(loading, search).then( res => loading(false)).catch( error => loading(false));
-
-				}
-
+				this.debouncedSearchFn(search, loading);
 			},
-			
+
+			_onSearch(search, loading) {
+				if (search.length > this.minSearchLength && this.ajax && this.validation(search)) {
+					loading(true);
+					this.search(loading, search)
+						.then(() => loading(false))
+						.catch(() => loading(false));
+				}
+			},
+
 			search(loading, search) {
-				
 				return new Promise((resolve, reject) => {
-
 					const requestData = {
-
-						_token: csrf_token,
-
+						_token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
 						paginate: 0,
-
 						[this.q]: this.parseBeforeSubmit(search),
-
 						...this.searchParams
-
 					};
 
 					const config = {
-
 						url: this.route,
-
 						method: this.method,
-
 						[this.method === 'post' ? 'data' : 'params']: requestData
-
 					};
 
 					axios(config).then(res => {
-
 						this.$emit('search', res.data);
-
 						this.customOptions = res.data;
-
 						resolve(res);
-
 					}).catch(error => {
-
 						reject(error);
-
 					});
-
 				});
+			},
 
+			debounce(func, wait) {
+				let timeout;
+				return function (...args) {
+					const later = () => {
+						timeout = null;
+						func.apply(this, args);
+					};
+					clearTimeout(timeout);
+					timeout = setTimeout(later, wait);
+				};
 			}
-
 		}
-
 	}
-
 </script>
 
 <style>

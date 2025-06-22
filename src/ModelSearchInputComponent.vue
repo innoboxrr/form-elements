@@ -18,6 +18,7 @@
             :min-search-length="0"
             :multiple="multiple"
             :noOptionsText="noOptionsText"
+            :debounce-time="debounceTime"
             v-model="model_id" />  
 
     </div>
@@ -97,6 +98,11 @@
                 type: String,
                 default: 'Nothing results found',
             },
+
+            debounceTime: {
+                type: Number,
+                default: 300 // valor por defecto en milisegundos
+            }
 
         },
 
