@@ -106,7 +106,7 @@
 
         },
 
-        emits: ['submit'],
+        emits: ['submit', 'select'],
 
         data() {
 
@@ -133,25 +133,23 @@
         },
 
         watch: {
-
             model_id(val) {
 
-                if(Number.isInteger(val) && val > 0) {
+                this.$emit('submit', val);
 
-                    this.$emit('submit', val);
-
+                if (Number.isInteger(val) && val > 0) {
                     this.showForm = !this.hideOnEmit;
-
-                } else {
-
-                    this.$emit('submit', val);
-                    
                 }
 
+                if (!this.multiple && val != null) {
+                    const selected = this.customOptions.find(
+                        option => this.reduce(option) === val
+                    );
+                    if (selected) {
+                        this.$emit('selected', selected);
+                    }
+                }
             }
-
         }
-
     }
-
 </script>
