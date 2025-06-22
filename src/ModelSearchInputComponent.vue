@@ -19,6 +19,7 @@
             :multiple="multiple"
             :noOptionsText="noOptionsText"
             :debounce-time="debounceTime"
+            @search="setOptions"
             v-model="model_id" />  
 
     </div>
@@ -109,27 +110,18 @@
         emits: ['submit', 'select'],
 
         data() {
-
             return {
-
+                options: [],
                 model_id: [],
-
                 searchParams: {},
-
                 showForm: true,
-
             }
-
         },
 
         mounted() {
-
             this.searchParams = {
-
                 ...this.externalFilters,
-
             }   
-
         },
 
         watch: {
@@ -142,14 +134,20 @@
                 }
 
                 if (!this.multiple && val != null) {
-                    const selected = this.customOptions.find(
-                        option => this.reduce(option) === val
+                    const selected = this.options?.find(
+                        option => option.id === val
                     );
                     if (selected) {
                         this.$emit('selected', selected);
                     }
                 }
             }
-        }
+        },
+
+        methods: {
+            setOptions(options) {
+                this.options = options;
+            },
+        },
     }
 </script>
