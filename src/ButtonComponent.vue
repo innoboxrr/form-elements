@@ -3,6 +3,7 @@
 	<div class="uk-margin">
 
         <button 
+			:type="type"
             :class="customClass"
             :disabled="disabled">
 
@@ -33,6 +34,11 @@
 				type: String,
 				required: true,
 				default: "Enviar"
+			},
+			type: {
+				type: String,
+				required: false,
+				default: "submit"
 			}
 		}
 
