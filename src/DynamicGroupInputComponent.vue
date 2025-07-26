@@ -18,6 +18,7 @@
                     :is="resolveComponent(field.type)"
                     v-model="group[field.key]"
                     v-bind="getFieldAttributes(field, groupIndex, fieldIndex)"
+                    @paste-list="handlePasteList($event, field.key, groupIndex)"
                 >
                     <template v-slot>
                         <option 
@@ -81,6 +82,10 @@
             hasSufix: {
                 type: Boolean,
                 default: true
+            },
+            pasteListConfirmMessage: {
+                type: String,
+                default: 'Do you want to split the pasted items into multiple groups?'
             }
         },
         computed: {
@@ -124,6 +129,23 @@
                     name: `${field.key}-${groupIndex}-${fieldIndex}`,
                     label: label,
                 };
+            },
+            handlePasteList(items, key, groupIndex) {
+                const confirmSplit = confirm(this.pasteListConfirmMessage || 'Do you want to split the pasted items into multiple groups?');
+
+                if (!confirmSplit) return;
+
+                // Reemplaza el valor original con el primero
+                this.value[groupIndex][key] = items[0];
+
+                // Inserta los demás como nuevos grupos
+                for (let i = 1; i < items.length; i++) {
+                    const newGroup = {};
+                    this.inputsConfig.forEach(field => {
+                        newGroup[field.key] = field.key === key ? items[i] : '';
+                    });
+                    this.value.splice(groupIndex + i, 0, newGroup);
+                }
             }
         }
     };

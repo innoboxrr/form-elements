@@ -36,6 +36,7 @@
             	@input="$emit('input', $event)"
             	@focus="$emit('focus', $event)"
             	@blur="$emit('blur', $event)"
+				@paste="handlePaste"
             	v-model="value">
 
         </div>
@@ -116,57 +117,54 @@
 			},
 			modelValue: {
 				default: ""
+			},
+			enablePasteList: {
+				type: Boolean,
+				default: false
 			}
 		},
 
-		emits: ['update:modelValue', 'enter', 'focus', 'blur', 'input'],
+		emits: ['update:modelValue', 'enter', 'focus', 'blur', 'input', 'paste-list'],
 
 		directives: {
-
 			format: formatDirective
-
 		},
 
 		data() {
-
 			return {
-
 				uid: chance.hash(),
-
 			}
-
 		},
 
 		computed: {
-
 			value: {
-
 				get() {
 					return this.modelValue;
 				},
-
 				set(value){
-					
 					this.$emit('update:modelValue', value);
-
 				}
-
 			},
-
 			hasIcon() {
-
 				return (this.icon == "" || this.icon == null) ? false : true;
-
 			},
-
 			iconAttr() {
-
 				return (this.icon == "") ? "" : `icon: ${this.icon}`;
-
 			}
+		},
+		methods: {
+			handlePaste(event) {
+				const clipboardData = event.clipboardData || window.clipboardData;
+				const pastedText = clipboardData.getData('text');
 
+				const delimiter = pastedText.includes('\n') ? '\n' : ',';
+				const items = pastedText.split(delimiter).map(i => i.trim()).filter(Boolean);
+
+				if (items.length > 1 && this.enablePasteList) {
+					event.preventDefault(); 
+					this.$emit('paste-list', items);
+				}
+			}
 		}
-
 	}
-
 </script>
