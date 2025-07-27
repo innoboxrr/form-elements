@@ -90,18 +90,8 @@
                     return this.modelValue;
                 },
                 set(value) {
-                    console.log('Setting value:', value);
                     this.$emit('update:modelValue', value);
                 }
-            }
-        },
-        watch: {
-            value: {
-                handler(newValue) {
-                    console.log('Value updated:', newValue);
-                },
-                immediate: true,
-                deep: true
             }
         },
         methods: {
