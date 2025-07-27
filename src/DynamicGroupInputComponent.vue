@@ -18,7 +18,7 @@
                     :is="resolveComponent(field.type)"
                     v-model="group[field.key]"
                     v-bind="getFieldAttributes(field, groupIndex, fieldIndex)"
-                    @paste-list="handlePasteList($event, field.key, groupIndex)"
+                    @paste="handlePaste($event, groupIndex, field)"
                 >
                     <template v-slot>
                         <option 
@@ -82,10 +82,6 @@
             hasSufix: {
                 type: Boolean,
                 default: true
-            },
-            pasteListConfirmMessage: {
-                type: String,
-                default: 'Do you want to split the pasted items into multiple groups?'
             }
         },
         computed: {
@@ -94,8 +90,18 @@
                     return this.modelValue;
                 },
                 set(value) {
+                    console.log('Setting value:', value);
                     this.$emit('update:modelValue', value);
                 }
+            }
+        },
+        watch: {
+            value: {
+                handler(newValue) {
+                    console.log('Value updated:', newValue);
+                },
+                immediate: true,
+                deep: true
             }
         },
         methods: {
@@ -130,23 +136,44 @@
                     label: label,
                 };
             },
-            handlePasteList(items, key, groupIndex) {
-                const confirmSplit = confirm(this.pasteListConfirmMessage || 'Do you want to split the pasted items into multiple groups?');
+            handlePaste(event, groupIndex, field) {
+                if (!field?.attributes?.enablePasteList) return;
+
+                const clipboardData = event.clipboardData || window.clipboardData;
+                const pastedText = clipboardData.getData('text') || '';
+
+                // Separador: si contiene saltos de línea, separamos por línea; si no, por coma
+                const items = pastedText
+                    .split(pastedText.includes('\n') ? '\n' : ',')
+                    .map(i => i.trim())
+                    .filter(Boolean);
+
+                // Solo si hay más de un ítem tiene sentido dividirlo
+                if (items.length <= 1) return;
+
+                event.preventDefault();
+
+                const confirmSplit = confirm(
+                    `Se detectaron múltiples valores para "${field.attributes.label}".\n¿Deseas dividirlos en grupos separados?`
+                );
 
                 if (!confirmSplit) return;
 
-                // Reemplaza el valor original con el primero
-                this.value[groupIndex][key] = items[0];
+                // Sobrescribimos el valor actual con el primer ítem
+                this.value[groupIndex][field.key] = items[0];
 
-                // Inserta los demás como nuevos grupos
+                // Insertamos nuevos grupos con los demás valores
                 for (let i = 1; i < items.length; i++) {
                     const newGroup = {};
-                    this.inputsConfig.forEach(field => {
-                        newGroup[field.key] = field.key === key ? items[i] : '';
+
+                    this.inputsConfig.forEach(f => {
+                        newGroup[f.key] = f.key === field.key ? items[i] : '';
                     });
+
                     this.value.splice(groupIndex + i, 0, newGroup);
                 }
             }
+
         }
     };
 
