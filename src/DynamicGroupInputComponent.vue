@@ -2,171 +2,216 @@
     <div>
         <label 
             v-if="label"
-            class="block mb-4 ml-2 text-sm font-medium text-gray-900 dark:text-white">
+            class="block mb-4 ml-2 text-sm font-medium text-slate-900 dark:text-slate-100">
             {{ label }}
         </label>
-        <div 
-            v-for="(group, groupIndex) in value" 
-            :key="groupIndex" 
-            class="relative"
-            :class="{
-                'mb-12': groupIndex < value.length - 1,
-                'mb-4': groupIndex === value.length - 1
-            }">
-            <div v-for="(field, fieldIndex) in inputsConfig" :key="fieldIndex">
-                <component 
-                    :is="resolveComponent(field.type)"
-                    v-model="group[field.key]"
-                    v-bind="getFieldAttributes(field, groupIndex, fieldIndex)"
-                    @paste="handlePaste($event, groupIndex, field)"
+
+        <draggable
+            v-model="value"
+            handle=".drag-handle"
+            item-key="__draggable_key"
+            class="space-y-2 rounded-lg"
+        >
+            <template #item="{ element: group, index: groupIndex }">
+                <div 
+                    class="border rounded-lg bg-white dark:bg-slate-800 shadow-sm relative dark:border-slate-600"
+                    :key="groupIndex"
                 >
-                    <template v-slot>
-                        <option 
-                            v-for="option in field.options" 
-                            :key="option.value" 
-                            :value="option.value"
-                            :disabled="option.disabled">
-                            {{ option.text }}
-                        </option>
-                    </template>
-                </component>
-            </div>
-            <button 
-                @click.prevent="removeGroup(groupIndex)" 
-                class="absolute -bottom-12 right-0 inline-flex items-center gap-x-1.5 rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
-                {{ removeButtonLabel || __('Remove') }}
-            </button>
-        </div>
+                    <!-- ENCABEZADO -->
+                    <div 
+                        class="flex justify-between items-center px-4 py-3 border-b bg-slate-50 dark:bg-slate-700 dark:border-slate-600 cursor-pointer rounded-t-lg border-b-slate-200 dark:border-b-slate-600"
+                        @click.prevent="group._collapsed = !group._collapsed"
+                    >
+                        <div class="flex items-center gap-2">
+                            <div class="cursor-move drag-handle text-slate-400">
+                                <i class="fa-solid fa-grip-vertical"></i>
+                            </div>
+                            <h4 class="text-md font-semibold text-slate-800 dark:text-slate-100">
+                                {{ __('Item') }} #{{ groupIndex + 1 }}
+                            </h4>
+                        </div>
+                        <div class="flex items-center space-x-4 text-slate-400">
+                            <button
+                                @click.stop="duplicateGroup(groupIndex)"
+                                title="Duplicar grupo"
+                                class="hover:text-blue-500 transition mr-2">
+                                <i class="fa-solid fa-clone"></i>
+                            </button>
+                            <button
+                                class="text-red-800 dark:text-red-400 text-sm hover:text-red-700 dark:hover:text-red-300"
+                                :title="__('Eliminar grupo')"
+                                @click.stop="removeGroup(groupIndex)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <button
+                                title="Expandir/Colapsar"
+                                class="hover:text-slate-600 dark:hover:text-slate-300 transition">
+                                <i
+                                    :class="[
+                                        'fa-solid',
+                                        !group._collapsed ? 'fa-chevron-down' : 'fa-chevron-up'
+                                    ]"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CUERPO -->
+                    <div 
+                        v-show="!group._collapsed"
+                        class="px-6 py-4 bg-white dark:bg-slate-800"
+                    >
+                        <div 
+                            v-for="(field, fieldIndex) in inputsConfig" 
+                            :key="fieldIndex"
+                        >
+                            <component 
+                                :is="resolveComponent(field.type)"
+                                v-model="group[field.key]"
+                                v-bind="getFieldAttributes(field, groupIndex, fieldIndex)"
+                                @paste="handlePaste($event, groupIndex, field)"
+                            >
+                                <template v-slot>
+                                    <option 
+                                        v-for="option in field.options" 
+                                        :key="option.value" 
+                                        :value="option.value"
+                                        :disabled="option.disabled">
+                                        {{ option.text }}
+                                    </option>
+                                </template>
+                            </component>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </draggable>
+
+        <!-- BOTÓN PARA AÑADIR -->
         <button 
             @click.prevent="addGroup" 
-            class="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            class="mt-6 inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             {{ addButtonLabel || __('Add') }}
         </button>
     </div>
 </template>
 
+
 <script>
-    import TextInputComponent from './TextInputComponent.vue';
-    import SelectInputComponent from './SelectInputComponent.vue';
-    import TextareaInputComponent from './TextareaInputComponent.vue';
-    import EditorInputComponent from './EditorInputComponent.vue';
+import draggable from 'vuedraggable';
+import TextInputComponent from './TextInputComponent.vue';
+import SelectInputComponent from './SelectInputComponent.vue';
+import TextareaInputComponent from './TextareaInputComponent.vue';
+import EditorInputComponent from './EditorInputComponent.vue';
 
-    export default {
-        components: {
-            TextInputComponent,
-            SelectInputComponent,
-            TextareaInputComponent,
-            EditorInputComponent
+export default {
+    components: {
+        TextInputComponent,
+        SelectInputComponent,
+        TextareaInputComponent,
+        EditorInputComponent,
+        draggable
+    },
+    props: {
+        modelValue: {
+            type: Array,
+            required: true
         },
-        props: {
-            modelValue: {
-                type: Array,
-                required: true
-            },
-            inputsConfig: {
-                type: Array,
-                required: true
-            },
-            label: {
-                type: String,
-                default: ''
-            },
-            addButtonLabel: {
-                type: String,
-                default: ''
-            },
-            removeButtonLabel: {
-                type: String,
-                default: ''
-            },
-            hasSufix: {
-                type: Boolean,
-                default: true
-            }
+        inputsConfig: {
+            type: Array,
+            required: true
         },
-        computed: {
-            value: {
-                get() {
-                    return this.modelValue;
-                },
-                set(value) {
-                    this.$emit('update:modelValue', value);
-                }
-            }
+        label: {
+            type: String,
+            default: ''
         },
-        methods: {
-            resolveComponent(type) {
-                const components = {
-                    text: 'TextInputComponent',
-                    editor: 'EditorInputComponent',
-                    select: 'SelectInputComponent',
-                    textarea: 'TextareaInputComponent',
-                };
-                return components[type] || 'div'; // Fallback component
-            },
-            addGroup() {
-                const newGroup = {};
-                this.inputsConfig.forEach(field => {
-                    newGroup[field.key] = '';
-                });
-                this.value.push(newGroup);
-            },
-            removeGroup(index) {
-                this.value.splice(index, 1);
-            },
-            getFieldKey(field, groupIndex) {
-                return `${field.key}-${groupIndex}`;
-            },
-            getFieldAttributes(field, groupIndex, fieldIndex) {
-                let label = this.hasSufix ? `${field.attributes.label} #${groupIndex + 1}` : field.attributes.label;
-                return {
-                    ...field.attributes,
-                    id: `${field.key}-${groupIndex}-${fieldIndex}`,
-                    name: `${field.key}-${groupIndex}-${fieldIndex}`,
-                    label: label,
-                };
-            },
-            handlePaste(event, groupIndex, field) {
-                if (!field?.attributes?.enablePasteList) return;
-
-                const clipboardData = event.clipboardData || window.clipboardData;
-                const pastedText = clipboardData.getData('text') || '';
-
-                // Separador: si contiene saltos de línea, separamos por línea; si no, por coma
-                const items = pastedText
-                    .split(pastedText.includes('\n') ? '\n' : ',')
-                    .map(i => i.trim())
-                    .filter(Boolean);
-
-                // Solo si hay más de un ítem tiene sentido dividirlo
-                if (items.length <= 1) return;
-
-                event.preventDefault();
-
-                const confirmSplit = confirm(
-                    `Se detectaron múltiples valores para "${field.attributes.label}".\n¿Deseas dividirlos en grupos separados?`
-                );
-
-                if (!confirmSplit) return;
-
-                // Sobrescribimos el valor actual con el primer ítem
-                this.value[groupIndex][field.key] = items[0];
-
-                // Insertamos nuevos grupos con los demás valores
-                for (let i = 1; i < items.length; i++) {
-                    const newGroup = {};
-
-                    this.inputsConfig.forEach(f => {
-                        newGroup[f.key] = f.key === field.key ? items[i] : '';
-                    });
-
-                    this.value.splice(groupIndex + i, 0, newGroup);
-                }
-            }
-
+        addButtonLabel: {
+            type: String,
+            default: ''
+        },
+        removeButtonLabel: {
+            type: String,
+            default: ''
+        },
+        hasSufix: {
+            type: Boolean,
+            default: true
         }
-    };
+    },
+    computed: {
+        value: {
+            get() {
+                return this.modelValue;
+            },
+            set(value) {
+                this.$emit('update:modelValue', value);
+            }
+        }
+    },
+    methods: {
+        resolveComponent(type) {
+            const components = {
+                text: 'TextInputComponent',
+                editor: 'EditorInputComponent',
+                select: 'SelectInputComponent',
+                textarea: 'TextareaInputComponent',
+            };
+            return components[type] || 'div';
+        },
+        addGroup() {
+            const newGroup = { _collapsed: false };
+            this.inputsConfig.forEach(field => {
+                newGroup[field.key] = '';
+            });
+            newGroup.__draggable_key = Date.now() + Math.random();
+            this.value.push(newGroup);
+        },
+        duplicateGroup(index) {
+            const original = this.value[index];
+            const clone = { ...original, _collapsed: false, __draggable_key: Date.now() + Math.random() };
+            this.value.splice(index + 1, 0, clone);
+        },
+        removeGroup(index) {
+            this.value.splice(index, 1);
+        },
+        getFieldAttributes(field, groupIndex, fieldIndex) {
+            let label = this.hasSufix ? `${field.attributes.label} #${groupIndex + 1}` : field.attributes.label;
+            return {
+                ...field.attributes,
+                id: `${field.key}-${groupIndex}-${fieldIndex}`,
+                name: `${field.key}-${groupIndex}-${fieldIndex}`,
+                label: label,
+            };
+        },
+        handlePaste(event, groupIndex, field) {
+            if (!field?.attributes?.enablePasteList) return;
 
+            const clipboardData = event.clipboardData || window.clipboardData;
+            const pastedText = clipboardData.getData('text') || '';
+            const items = pastedText
+                .split(pastedText.includes('\n') ? '\n' : ',')
+                .map(i => i.trim())
+                .filter(Boolean);
+
+            if (items.length <= 1) return;
+            event.preventDefault();
+
+            const confirmSplit = confirm(
+                `Se detectaron múltiples valores para "${field.attributes.label}".\n¿Deseas dividirlos en grupos separados?`
+            );
+            if (!confirmSplit) return;
+
+            this.value[groupIndex][field.key] = items[0];
+
+            for (let i = 1; i < items.length; i++) {
+                const newGroup = { _collapsed: false, __draggable_key: Date.now() + i };
+                this.inputsConfig.forEach(f => {
+                    newGroup[f.key] = f.key === field.key ? items[i] : '';
+                });
+                this.value.splice(groupIndex + i, 0, newGroup);
+            }
+        }
+    }
+}
 /**
  * Usage:
     <dynamic-group-input-component 
