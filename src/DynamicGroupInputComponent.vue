@@ -32,7 +32,7 @@
                         </div>
                         <div class="flex items-center space-x-4 text-slate-400">
                             <button
-                                @click.stop="duplicateGroup(groupIndex)"
+                                @click.prevent.stop="duplicateGroup(groupIndex)"
                                 title="Duplicar grupo"
                                 class="hover:text-blue-500 transition mr-2">
                                 <i class="fa-solid fa-clone"></i>
@@ -40,7 +40,7 @@
                             <button
                                 class="text-red-800 dark:text-red-400 text-sm hover:text-red-700 dark:hover:text-red-300"
                                 :title="__('Eliminar grupo')"
-                                @click.stop="removeGroup(groupIndex)">
+                                @click.prevent.stop="removeGroup(groupIndex)">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                             <button
