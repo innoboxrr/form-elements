@@ -1,42 +1,50 @@
 {
-  "name": "innoboxrr-form-elements",
-  "version": "3.0.22",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/innoboxrr/form-elements.git"
-  },
-  "keywords": [
-    "vue",
-    "vue3",
-    "form",
-    "elements"
-  ],
-  "author": "Homero Raul Vargas Cruz",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/innoboxrr/form-elements/issues"
-  },
-  "homepage": "https://github.com/innoboxrr/form-elements#readme",
-  "dependencies": {
-    "@codemirror/lang-css": "^6.0.0",
-    "@codemirror/lang-html": "^6.1.1",
-    "@codemirror/lang-javascript": "^6.0.2",
-    "@codemirror/lang-json": "^6.0.0",
-    "@codemirror/theme-one-dark": "^6.1.0",
-    "@tinymce/tinymce-vue": "^5.0.0",
-    "@yaireo/tagify": "^4.27.0",
-    "codemirror": "^6.0.1",
-    "innoboxrr-maskjs": "^1.0.2",
-    "lightvue": "^1.5.1",
-    "vue": "^3.2.39",
-    "vue-codemirror": "^6.1.1",
-    "vue-select": "^4.0.0-beta.3",
-    "vue-tel-input": "^6.0.5",
-    "vuedraggable": "^2.24.3"
-  }
+    "name": "innoboxrr-form-elements",
+    "version": "3.0.23",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/innoboxrr/form-elements.git"
+    },
+    "keywords": [
+        "vue",
+        "vue3",
+        "form",
+        "elements"
+    ],
+    "author": "Homero Raul Vargas Cruz",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/innoboxrr/form-elements/issues"
+    },
+    "homepage": "https://github.com/innoboxrr/form-elements#readme",
+    "dependencies": {
+        "@codemirror/lang-css": "^6.0.0",
+        "@codemirror/lang-html": "^6.1.1",
+        "@codemirror/lang-javascript": "^6.0.2",
+        "@codemirror/lang-json": "^6.0.0",
+        "@codemirror/theme-one-dark": "^6.1.0",
+        "@tinymce/tinymce-vue": "^5.0.0",
+        "@yaireo/tagify": "^4.27.0",
+        "codemirror": "^6.0.1",
+        "innoboxrr-maskjs": "^1.0.2",
+        "lightvue": "^1.5.1",
+        "vue-codemirror": "^6.1.1",
+        "vue-select": "^4.0.0-beta.3",
+        "vue-tel-input": "^6.0.5"
+    },
+    "peerDependencies": {
+        "vue": "^3.3.0",
+        "vuedraggable": "^4.1.0",
+        "sortablejs": "^1.14.0"
+    },
+    "devDependencies": {
+        "vue": "^3.3.0",
+        "vuedraggable": "^4.1.0",
+        "sortablejs": "^1.14.0"
+    }
 }
