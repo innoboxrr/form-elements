@@ -26,6 +26,7 @@
         "@yaireo/tagify": "^4.27.0",
         "codemirror": "^6.0.1",
         "innoboxrr-maskjs": "^1.0.2",
+        "vuedraggable": "^4.1.0",
         "vue-codemirror": "^6.1.1",
         "vue-select": "^4.0.0-beta.3",
         "vue-tel-input": "^6.0.5"
@@ -33,7 +34,6 @@
 
     "peerDependencies": {
         "vue": "^3.3.0",
-        "vuedraggable": "^4.1.0",
         "sortablejs": "^1.14.0",
         "lightvue": "*"
     },
