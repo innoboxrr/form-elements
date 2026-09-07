@@ -1,10 +1,7 @@
 name: Release
 
-# Publica cuando la version de package.json sube y los tests pasan.
-#
-# La version vive en package.json y en ningun otro sitio: el tag se deriva de
-# ella. Al reves —autoincrementar un tag y esperar que package.json coincida—
-# es como se acaba publicando 2.0.0 con un package.json que dice 1.9.7.
+# Se dispara solo si los tests pasaron: workflow_run sobre 'Tests'. La version
+# la declara package.json y el tag se deriva de ella.
 on:
     workflow_run:
         workflows: ['Tests']
@@ -14,72 +11,5 @@ on:
 
 jobs:
     release:
-        runs-on: ubuntu-latest
-
-        if: >
-            github.event_name == 'workflow_dispatch' ||
-            github.event.workflow_run.conclusion == 'success'
-
-        permissions:
-            contents: write
-            # Para la procedencia de npm, que firma el paquete con la identidad
-            # del workflow.
-            id-token: write
-
-        steps:
-            - uses: actions/checkout@v5
-              with:
-                  ref: ${{ github.event.workflow_run.head_sha || github.ref }}
-                  fetch-depth: 0
-
-            - uses: actions/setup-node@v5
-              with:
-                  node-version: '22'
-                  registry-url: 'https://registry.npmjs.org'
-
-            - name: Leer la version
-              id: version
-              run: echo "value=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
-
-            - name: ¿Hay que publicar?
-              id: check
-              env:
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-              run: |
-                  if git rev-parse "v${{ steps.version.outputs.value }}" >/dev/null 2>&1; then
-                      echo "::notice::El tag v${{ steps.version.outputs.value }} ya existe; no se publica."
-                      echo "skip=true" >> "$GITHUB_OUTPUT"
-                      exit 0
-                  fi
-
-                  # Sin el secreto no se puede publicar. Se avisa y se sale en
-                  # verde: un rojo aqui no significa que el codigo este mal,
-                  # solo que falta configurar el token, y confundir las dos
-                  # cosas hace que se deje de mirar el CI.
-                  if [ -z "$NPM_TOKEN" ]; then
-                      echo "::warning::Falta el secreto NPM_TOKEN; no se publica v${{ steps.version.outputs.value }}."
-                      echo "::warning::Ponlo con: gh secret set NPM_TOKEN --org innoboxrr"
-                      echo "skip=true" >> "$GITHUB_OUTPUT"
-                  fi
-
-            - name: Instalar
-              if: steps.check.outputs.skip != 'true'
-              run: npm install --no-audit --no-fund
-
-            - name: Tests
-              if: steps.check.outputs.skip != 'true'
-              run: npm test
-
-            - name: Publicar en npm
-              if: steps.check.outputs.skip != 'true'
-              run: npm publish --provenance --access public
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-            - name: Etiquetar
-              if: steps.check.outputs.skip != 'true'
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git tag "v${{ steps.version.outputs.value }}"
-                  git push origin "v${{ steps.version.outputs.value }}"
+        uses: innoboxrr/.github/.github/workflows/node-release.yml@main
+        secrets: inherit
