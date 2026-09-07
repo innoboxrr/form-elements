@@ -138,357 +138,256 @@
 
 </template>
 
-<script>
+<script setup>
 
+    import { computed, ref, watch } from 'vue'
     import { validateFiles } from './js/files.js'
-    
-    export default {    
 
-        props: {
-            uploadUrl: {
-                type: String,
-                required: true,
-            },
-            method: {   
-                type: String,
-                method: 'POST'
-            },
-            autoUpload: {
-                type: Boolean,
-                default: false
-            },
-            name: {
-                type: String,
-                default: 'file'
-            },
-            visibility: {
-                type: String,
-                default: 'public'
-            },
-            // bytes, zero for unlimited
-            maxSize: {
-                type: Number,
-                default: 0 
-            },  
-            // bytes, zero for unlimited (In case of multiple file, the sum for all)
-            totalMaxSize: {
-                type: Number,
-                default: 0
-            },
-            // If multiple is true, the total files the user can submit
-            maxFiles: {
-                type: Number,
-                default: 1
-            },
-            validMimes: {
-                type: Array,
-                default: [
-
-                    'text/plain',
-                    
-                    'image/gif',
-                    'image/jpeg',
-                    'image/png',
-                    'image/gif',
-                    
-                    'audio/mp3',
-                    'audio/mpeg',
-                    'audio/midi',
-                    
-                    'video/mp4',
-                    'video/quicktime',
-                    
-                    'application/pdf',
-
-                    'application/msword',
-                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-
-                    'application/gzip',
-
-                ]
-            },
-            dropzoneClass: {
-                type: String,
-                default: 'drop-zone'
-            },
-            message: {
-                type: String,
-                default: 'Drop files here or click here to upload their files'
-            },
-            onDropMessage: {
-                type: String,
-                default: 'Drop files here...'
-            },
-            onUploadMessage: {
-                type: String,
-                default: 'Files are being uploaded'
-            },
-            hideOnMaxFilesReached: {
-                type: Boolean,
-                default: false
-            },
-            previewGridClass: {
-                type: String,
-                default: 'uk-width-1-4@m'
-            },
-            showTopPreview: {
-                type: Boolean,
-                default: false
-            },
-            showBottomPreview: {
-                type: Boolean,
-                default: false
-            }
+    const props = defineProps({
+        uploadUrl: {
+            type: String,
+            required: true,
         },
-
-        emits: ['startUpload', 'updateFileList', 'endUpload'],
-
-        data() {
-            
-            return {
-
-                files: [],
-                
-                paths: [], // Arreglo de las URI de los archivos subidos
-                
-                onDrop: false,
-                
-                currentOnUpload: false,
-                
-                rules: {
-                    maxSize: this.maxSize,
-                    validMimes: this.validMimes
-                },
-                
-                errors: [], // Archivos con errores, se adjuntan desde pushFiles
-
-            }
-
+        /**
+         * Estaba declarado como `{ type: String, method: 'POST' }`: la clave
+         * es `default`, no `method`, asi que el prop nunca tenia valor. Y
+         * tampoco se usaba, porque fetch llevaba 'POST' fijo.
+         */
+        method: {
+            type: String,
+            default: 'POST'
         },
-
-        watch: {
-
-            fileList(val) {
-
-                if(val.length > 0 && !this.currentOnUpload){
-
-                    if(this.autoUpload) {
-
-                        this.currentOnUpload = true;
-
-                        this.uploadFiles();
-
-                    }else {
-
-                        console.log('Mostrar botón para subir los archivos');
-
-                    }
-
-                }
-
-                setTimeout( () => { this.errors = []}, 5000);
-
-            }
-
+        autoUpload: {
+            type: Boolean,
+            default: false
         },
-
-        computed: {
-
-            multiple() {
-
-                return (this.maxFiles > 1) ? true : null;
-
-            },
-
-            maxFilesReached() {
-
-                return (this.fileList.length >= this.maxFiles);
-
-            },
-
-            onDropClass() {
-
-                return (this.onDrop) ? 'ondrop' : '';
-
-            },
-
-            fileList() {
-
-                let fileList = [];
-
-                for (var i = 0; i < this.files.length; i++) {
-
-                    for (var j = 0; j < this.files[i].length; j++) {
-
-                        fileList.push(this.files[i][j]);
-
-                    }
-
-                }
-
-                return fileList;
-
-            }
-
+        name: {
+            type: String,
+            default: 'file'
         },
+        visibility: {
+            type: String,
+            default: 'public'
+        },
+        // bytes, zero for unlimited
+        maxSize: {
+            type: Number,
+            default: 0
+        },
+        // bytes, zero for unlimited (In case of multiple file, the sum for all)
+        totalMaxSize: {
+            type: Number,
+            default: 0
+        },
+        // If multiple is true, the total files the user can submit
+        maxFiles: {
+            type: Number,
+            default: 1
+        },
+        // Vue 3 exige factoria en los defaults de array.
+        validMimes: {
+            type: Array,
+            default: () => ([
 
-        methods: {
+                'text/plain',
 
-            handleFileChange(e) {
+                'image/gif',
+                'image/jpeg',
+                'image/png',
+                'image/gif',
 
-                let files = [...e.target.files];
+                'audio/mp3',
+                'audio/mpeg',
+                'audio/midi',
 
-                // Publicar imágenes
-                this.pushFiles(files);
+                'video/mp4',
+                'video/quicktime',
 
-            },
+                'application/pdf',
 
-            handleDragOver(){
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
 
-                this.onDrop = true;
+                'application/gzip',
 
-            },
+            ])
+        },
+        dropzoneClass: {
+            type: String,
+            default: 'drop-zone'
+        },
+        message: {
+            type: String,
+            default: 'Drop files here or click here to upload their files'
+        },
+        onDropMessage: {
+            type: String,
+            default: 'Drop files here...'
+        },
+        onUploadMessage: {
+            type: String,
+            default: 'Files are being uploaded'
+        },
+        hideOnMaxFilesReached: {
+            type: Boolean,
+            default: false
+        },
+        previewGridClass: {
+            type: String,
+            default: 'uk-width-1-4@m'
+        },
+        showTopPreview: {
+            type: Boolean,
+            default: false
+        },
+        showBottomPreview: {
+            type: Boolean,
+            default: false
+        }
+    })
 
-            handleDrop(){
+    const emit = defineEmits(['startUpload', 'updateFileList', 'endUpload'])
 
-                this.onDrop = false;
+    // files es un array de lotes; fileList lo aplana.
+    const files = ref([])
+    const onDrop = ref(false)
+    const currentOnUpload = ref(false)
+    const errors = ref([])
 
-                let files = [];
+    const rules = computed(() => ({
+        maxSize: props.maxSize,
+        validMimes: props.validMimes,
+    }))
 
-                // Recorrer cada uno de los elementos enviados
-                for (var i = 0; i < event.dataTransfer.items.length; i++) {
+    const fileList = computed(() => files.value.flat())
 
-                    // Capturar cada uno como archivo y sumarlo al arreglo local "files"
-                    files.push(event.dataTransfer.items[i].getAsFile());
+    const multiple = computed(() => props.maxFiles > 1 ? true : null)
 
-                }
+    const maxFilesReached = computed(() => fileList.value.length >= props.maxFiles)
 
-                // Publicar imágenes
-                this.pushFiles(files);
+    const onDropClass = computed(() => onDrop.value ? 'ondrop' : '')
 
-            },
+    const csrfToken = () => globalThis.csrf_token
+        ?? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+        ?? ''
 
-            handleDragLeave(){
+    const pushFiles = (incoming) => {
 
-                this.onDrop = false;
-
-            },
-
-            pushFiles(files) {
-
-                if(!this.currentOnUpload) {
-
-                    validateFiles(files, this.rules).then( files => {
-
-                        let validFiles = files.filter( file => file.validation == true);
-
-                        let invalidFiles = files.filter( file => file.validation == false);
-
-                        this.files.push(validFiles);
-
-                        this.errors.push(...invalidFiles);
-                        
-                    }).catch(error => {
-
-                        console.log(error);
-
-                    });
-
-                }
-
-            },
-
-            uploadFiles() {
-
-                this.fileList.forEach( file => {
-
-                    if(!file.uploaded && file.validation) {
-
-                        this.$emit('startUpload', true);
-
-                        this.currentOnUpload = true;
-
-                        let formData = new FormData();
-
-                        formData.append('_token', csrf_token);
-                        
-                        formData.append('file', file);
-
-                        formData.append('visibility', this.visibility);
-
-                        /*
-                        axios.post(this.uploadUrl, formData).then( res => {
-
-                            file.uploaded = true;
-
-                            file.path = res.data.path;
-
-                            file.id = res.data.id;
-
-                            this.currentOnUpload = false;
-
-                            this.$emit('updateFileList', this.fileList);
-
-                            this.$emit('endUpload', true);
-
-                        }).catch( error => {
-
-                            console.log(error.response);
-
-                        });
-                        */
-                        fetch(this.uploadUrl, {
-                          method: 'POST',
-                          body: formData
-                        })
-                        .then(response => {
-                          if (response.ok) {
-                            return response.json();
-                          } else {
-                            throw new Error('An error has occurred');
-                          }
-                        })
-                        .then(data => {
-                          file.uploaded = true;
-                          file.path = data.path;
-                          file.id = data.id;
-                          file.response = data;
-                          this.currentOnUpload = false;
-                          this.$emit('updateFileList', this.fileList);
-                          this.$emit('endUpload', true);
-                        })
-                        .catch(error => {
-                          console.log(error);
-                        });
-
-
-                    } else {
-
-                        this.$emit('updateFileList', this.fileList);
-
-                        this.currentOnUpload = false;
-
-                    }
-
-                });
-
-            },
-
-            deleteFile(file) {
-
-                // PENDIENTE: Elimianr el archivo desde el servidor
-
-                this.files.pop(file);
-
-                this.$emit('updateFileList', this.fileList);
-
-            }   
-
+        if (currentOnUpload.value) {
+            return
         }
 
+        validateFiles(incoming, rules.value).then((validated) => {
+
+            files.value.push(validated.filter((file) => file.validation === true))
+
+            errors.value.push(...validated.filter((file) => file.validation === false))
+
+        }).catch((error) => console.log(error))
+
     }
+
+    const handleFileChange = (event) => pushFiles([...event.target.files])
+
+    const handleDragOver = () => {
+        onDrop.value = true
+    }
+
+    const handleDragLeave = () => {
+        onDrop.value = false
+    }
+
+    /**
+     * Recibia el evento por la global implicita `window.event` en lugar de
+     * por parametro, que solo funciona en algunos navegadores y esta obsoleto.
+     */
+    const handleDrop = (event) => {
+
+        onDrop.value = false
+
+        pushFiles(Array.from(event.dataTransfer.items).map((item) => item.getAsFile()))
+
+    }
+
+    const uploadFiles = () => {
+
+        fileList.value.forEach((file) => {
+
+            if (file.uploaded || ! file.validation) {
+
+                emit('updateFileList', fileList.value)
+                currentOnUpload.value = false
+
+                return
+
+            }
+
+            emit('startUpload', true)
+
+            currentOnUpload.value = true
+
+            const formData = new FormData()
+
+            formData.append('_token', csrfToken())
+            formData.append('file', file)
+            formData.append('visibility', props.visibility)
+
+            fetch(props.uploadUrl, { method: props.method, body: formData })
+                .then((response) => {
+
+                    if (! response.ok) {
+                        throw new Error('An error has occurred')
+                    }
+
+                    return response.json()
+
+                })
+                .then((data) => {
+
+                    file.uploaded = true
+                    file.path = data.path
+                    file.id = data.id
+                    file.response = data
+
+                    currentOnUpload.value = false
+
+                    emit('updateFileList', fileList.value)
+                    emit('endUpload', true)
+
+                })
+                .catch((error) => console.log(error))
+
+        })
+
+    }
+
+    /**
+     * Hacia `files.pop(file)`: pop() ignora sus argumentos y quita el ultimo
+     * lote, asi que borrar un archivo eliminaba otro.
+     */
+    const deleteFile = (target) => {
+
+        files.value = files.value
+            .map((batch) => batch.filter((file) => file !== target))
+            .filter((batch) => batch.length > 0)
+
+        emit('updateFileList', fileList.value)
+
+    }
+
+    watch(fileList, (value) => {
+
+        if (value.length > 0 && ! currentOnUpload.value && props.autoUpload) {
+            currentOnUpload.value = true
+
+            uploadFiles()
+        }
+
+        setTimeout(() => { errors.value = [] }, 5000)
+
+    })
 
 </script>
 
