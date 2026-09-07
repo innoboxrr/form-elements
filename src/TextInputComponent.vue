@@ -34,11 +34,11 @@
                 	:step="steps"
                 	:readonly="readonly"
                 	v-format="maskFormat"
-                	@keyup.enter="$emit('enter', $event)"
-                	@input="$emit('input', $event)"
-                	@focus="$emit('focus', $event)"
-                	@blur="$emit('blur', $event)"
-    				@paste="$emit('paste', $event)"
+                	@keyup.enter="emit('enter', $event)"
+                	@input="emit('input', $event)"
+                	@focus="emit('focus', $event)"
+                	@blur="emit('blur', $event)"
+    				@paste="emit('paste', $event)"
                 	v-model="value">
 
                 <button
@@ -59,120 +59,116 @@
 
 </template>
 
-<script>
+<script setup>
 
-	import { formatDirective } from 'innoboxrr-maskjs'
+	import { computed, ref, useId } from 'vue'
+	import { formatDirective as vFormat } from 'innoboxrr-maskjs'
 
-	export default {
-
-		props: {
-			label: {
-				type: String,
-				required: false,
-				default: ''
-			},
-			help: {
-				type: String,
-				required: false,
-				default: null
-			},
-			icon: {
-				type: String,
-				required: false,
-				default: ""
-			},
-			customClass: {
-				type: String,
-				required: false,
-				default: 'uk-input uk-form-large uk-border-rounded'
-			},
-			type: {
-				type: String,
-				required: true,
-			},
-			name: {
-				type: String,
-				required: true
-			},
-			placeholder: {
-				type: String,
-				required: false
-			},
-			autofocus: {
-				default: null
-			},
-			autocomplete: {
-				type: String,
-				default: null,
-			},
-			validators: {
-				type: String,
-				required: false,
-			},
-			min_length: {
-				type: [String, Number],
-				required: false,
-			},
-			max_length: {
-				type: [String, Number],
-				required: false,
-			},
-			steps:{
-				type: [String, Number],
-				default: null
-			},
-			readonly: {
-				type: Boolean,
-				default: null
-			},
-			maskFormat:{
-				type: Object,
-				default: {},
-			},
-			modelValue: {
-				default: ""
-			}
+	const props = defineProps({
+		label: {
+			type: String,
+			required: false,
+			default: ''
 		},
-
-		emits: ['update:modelValue', 'enter', 'focus', 'blur', 'input', 'paste'],
-
-		directives: {
-			format: formatDirective
+		help: {
+			type: String,
+			required: false,
+			default: null
 		},
-
-		data() {
-			return {
-				uid: chance.hash(),
-				showPassword: false,
-			}
+		icon: {
+			type: String,
+			required: false,
+			default: ""
 		},
-
-		computed: {
-			value: {
-				get() {
-					return this.modelValue;
-				},
-				set(value){
-					this.$emit('update:modelValue', value);
-				}
-			},
-			hasIcon() {
-				return (this.icon == "" || this.icon == null) ? false : true;
-			},
-			iconAttr() {
-				return (this.icon == "") ? "" : `icon: ${this.icon}`;
-			},
-			isPassword() {
-				return this.type === 'password';
-			},
-			effectiveType() {
-				if (this.type === 'password') {
-					return this.showPassword ? 'text' : 'password';
-				}
-				return this.type;
-			}
+		customClass: {
+			type: String,
+			required: false,
+			default: 'uk-input uk-form-large uk-border-rounded'
+		},
+		type: {
+			type: String,
+			required: true,
+		},
+		name: {
+			type: String,
+			required: true
+		},
+		placeholder: {
+			type: String,
+			required: false,
+			default: null
+		},
+		autofocus: {
+			default: null
+		},
+		autocomplete: {
+			type: String,
+			default: null,
+		},
+		validators: {
+			type: String,
+			required: false,
+			default: null
+		},
+		min_length: {
+			type: [String, Number],
+			required: false,
+			default: null
+		},
+		max_length: {
+			type: [String, Number],
+			required: false,
+			default: null
+		},
+		steps:{
+			type: [String, Number],
+			default: null
+		},
+		readonly: {
+			type: Boolean,
+			default: null
+		},
+		// Vue 3 exige factoria: un literal comparte la misma instancia entre
+		// todos los montajes del componente.
+		maskFormat:{
+			type: Object,
+			default: () => ({}),
+		},
+		modelValue: {
+			default: ""
 		}
-	}
+	})
+
+	const emit = defineEmits(['update:modelValue', 'enter', 'focus', 'blur', 'input', 'paste'])
+
+	// Antes se usaba la global `chance.hash()`, que obligaba a que la app
+	// anfitriona la pusiera en window: el componente no se podia montar fuera
+	// de ella. useId() es la primitiva de Vue para esto.
+	const uid = useId()
+
+	const showPassword = ref(false)
+
+	const value = computed({
+		get: () => props.modelValue,
+		set: (newValue) => emit('update:modelValue', newValue),
+	})
+
+	const hasIcon = computed(() => props.icon !== '' && props.icon != null)
+
+	const iconAttr = computed(() => props.icon === '' ? '' : `icon: ${props.icon}`)
+
+	const isPassword = computed(() => props.type === 'password')
+
+	const effectiveType = computed(() => {
+
+		if (props.type !== 'password') {
+			return props.type
+		}
+
+		return showPassword.value ? 'text' : 'password'
+
+	})
+
 </script>
 
 <style scoped>
