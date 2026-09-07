@@ -97,3 +97,35 @@ describe('tema', () => {
             .toContain('uk-input')
     })
 })
+
+describe('variantes de boton', () => {
+    it('cada variante lee su propio token', () => {
+        setTheme({
+            button: 'primario',
+            buttonSecondary: 'secundario',
+            buttonDanger: 'peligro',
+            buttonLink: 'enlace',
+        })
+
+        const classOf = (variant) => mount(ButtonComponent, {
+            props: { value: 'x', variant },
+        }).find('button').classes()
+
+        expect(classOf('primary')).toContain('primario')
+        expect(classOf('secondary')).toContain('secundario')
+        expect(classOf('danger')).toContain('peligro')
+        expect(classOf('link')).toContain('enlace')
+    })
+
+    it('una variante desconocida cae al boton primario', () => {
+        setTheme({ button: 'primario' })
+
+        expect(mount(ButtonComponent, { props: { value: 'x', variant: 'inventada' } }).find('button').classes())
+            .toContain('primario')
+    })
+
+    it('sin variante es primario', () => {
+        expect(mount(ButtonComponent, { props: { value: 'x' } }).find('button').classes())
+            .toEqual(expect.arrayContaining(defaultTheme.button.split(' ')))
+    })
+})

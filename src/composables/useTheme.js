@@ -22,18 +22,33 @@ export function useTheme() {
 }
 
 /**
+ * Lo que puede llegar como token o como clase: un valor, un ref o un getter.
+ *
+ * @param {unknown} value
+ */
+const read = (value) => {
+    if (typeof value === 'function') {
+        return value()
+    }
+
+    // Un ref de Vue: se acepta para que un componente pueda elegir el token en
+    // tiempo de ejecución, como hace ButtonComponent con `variant`.
+    return (value && typeof value === 'object' && 'value' in value) ? value.value : value
+}
+
+/**
  * La clase de un control según el tema, dejando que `customClass` mande.
  *
- * @param {string} token
- * @param {() => (string|null|undefined)} customClass
+ * @param {string|import('vue').Ref<string>|(() => string)} token
+ * @param {string|null|undefined|import('vue').Ref|(() => (string|null|undefined))} customClass
  * @returns {import('vue').ComputedRef<string>}
  */
 export function useThemeClass(token, customClass) {
     const theme = useTheme()
 
     return computed(() => {
-        const custom = typeof customClass === 'function' ? customClass() : customClass
+        const custom = read(customClass)
 
-        return custom ?? (theme.value[token] ?? '')
+        return custom ?? (theme.value[read(token)] ?? '')
     })
 }

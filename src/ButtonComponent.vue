@@ -7,7 +7,7 @@
             :class="buttonClass"
             :disabled="disabled">
 
-            {{ value }}
+            <slot>{{ value }}</slot>
 
         </button>
 
@@ -17,9 +17,27 @@
 
 <script setup>
 
+	import { computed } from 'vue'
 	import { useThemeClass } from './composables/useTheme.js'
 
+	const TOKENS = {
+		primary: 'button',
+		secondary: 'buttonSecondary',
+		danger: 'buttonDanger',
+		link: 'buttonLink',
+	}
+
 	const props = defineProps({
+		/**
+		 * Elige el token del tema. Sin esto, un formulario generado tendria
+		 * que escribir la clase del boton secundario a mano, que es justo lo
+		 * que el tema viene a evitar.
+		 */
+		variant: {
+			type: String,
+			required: false,
+			default: 'primary'
+		},
 		customClass: {
 			type: String,
 			required: false,
@@ -32,7 +50,7 @@
 		},
 		value: {
 			type: String,
-			required: true,
+			required: false,
 			default: "Enviar"
 		},
 		type: {
@@ -42,6 +60,8 @@
 		}
 	})
 
-	const buttonClass = useThemeClass('button', () => props.customClass)
+	const token = computed(() => TOKENS[props.variant] ?? 'button')
+
+	const buttonClass = useThemeClass(token, () => props.customClass)
 
 </script>
