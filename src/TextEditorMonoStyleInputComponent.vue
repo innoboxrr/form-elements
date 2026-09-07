@@ -72,183 +72,151 @@
 
 </template>
 
-<script>
-	
+<script setup>
+
+	import { computed, ref } from 'vue'
+
 	import EditorInputComponent from './EditorInputComponent.vue'
 	import SpeechRecognition from './components/SpeechRecognition.vue'
 
-	export default {
+	const props = defineProps({
 
-		components: {
+		// Common props
 
-			EditorInputComponent,
-
-			SpeechRecognition
-
-		},
-
-		props: {
-
-			// Common props
-
-				label: {
-					type: String,
-					required: false,
-					default: ''
-				},
-
-				name: {
-					type: String,
-					required: true
-				},
-
-				defaultShowEditor: {
-					type: Boolean,
-					default: false,
-				},
-
-				showSpeechRecognition: {
-					type: Boolean,
-					default: true
-				},
-
-			// Textarea props
-
-				customClass: {
-					type: String,
-					required: false,
-				},
-				
-				placeholder: {
-					type: String,
-					required: false,
-					default: 'Comienza a escribir aquí...'
-				},
-				
-				validators: {
-					type: String,
-					required: false,
-				},
-				
-				min_length: {
-					type: String,
-					required: false,
-				},
-				
-				max_length: {
-					type: String,
-					required: false,
-				},
-
-			// Editor props
-
-				id: {
-					type: String,
-					default: 'tmce'
-				},
-
-				disabled: { // Habilita o deshabilita el editor
-					type: Boolean,
-					default: false,
-				},
-				
-				initialValue: { // Colocar valor inicial del editor
-					type: String,
-					default: ''
-				},
-				
-				inline: { // Modo de editor
-					type: Boolean,
-					default: false,
-				},
-				
-				output: { // Formato de salida de texto
-					type: String,
-					default: 'html' // html, text
-				},
-				
-				file: {
-					type: Boolean,
-					default: false
-				},
-				
-				height: {
-					type: Number,
-					default: 200
-				},
-
-				plugins:{
-					type: Array,
-					default: [
-		                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
-		                "searchreplace wordcount visualblocks visualchars code fullscreen",
-		                "insertdatetime media nonbreaking table directionality",
-		                "template paste textpattern codesample"
-		            ]      
-				},
-
-				toolbar: {
-					type: String,
-					default: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media codesample | fullscreen",
-				},
-
-				menubar: {
-					type: Boolean,
-					default: true
-				},
-
-			// Binding
-			
-				modelValue: {
-					type: String,
-					default: ""
-				}
-		
-		},
-
-		emits: ['update:modelValue'],
-
-		data() {
-
-			return {
-
-				showEditor: this.defaultShowEditor,
-
-			}
-
-		},
-
-		computed: {
-
-			value: {
-
-				get() {
-					
-					return this.modelValue;
-
-				},
-
-				set(value){
-					
-					this.$emit('update:modelValue', value);
-
-				}
-
+			label: {
+				type: String,
+				required: false,
+				default: ''
 			},
 
-		},
+			name: {
+				type: String,
+				required: true
+			},
 
-		methods: {
+			defaultShowEditor: {
+				type: Boolean,
+				default: false,
+			},
 
-			onTranscriptionEnd(data) {
+			showSpeechRecognition: {
+				type: Boolean,
+				default: true
+			},
 
-				let str = data.lastSentence[0].toLowerCase() + data.lastSentence.slice(1) + ' ';
+		// Textarea props
 
-				this.value += ' ' + str;
+			customClass: {
+				type: String,
+				required: false,
+				default: null
+			},
 
+			placeholder: {
+				type: String,
+				required: false,
+				default: 'Comienza a escribir aqui...'
+			},
+
+			validators: {
+				type: String,
+				required: false,
+				default: null
+			},
+
+			min_length: {
+				type: String,
+				required: false,
+				default: null
+			},
+
+			max_length: {
+				type: String,
+				required: false,
+				default: null
+			},
+
+		// Editor props
+
+			id: {
+				type: String,
+				default: 'tmce'
+			},
+
+			disabled: { // Habilita o deshabilita el editor
+				type: Boolean,
+				default: false,
+			},
+
+			initialValue: { // Colocar valor inicial del editor
+				type: String,
+				default: ''
+			},
+
+			inline: { // Modo de editor
+				type: Boolean,
+				default: false,
+			},
+
+			output: { // Formato de salida de texto
+				type: String,
+				default: 'html' // html, text
+			},
+
+			file: {
+				type: Boolean,
+				default: false
+			},
+
+			height: {
+				type: Number,
+				default: 200
+			},
+
+			// Vue 3 exige factoria en los defaults de array.
+			plugins:{
+				type: Array,
+				default: () => ([
+	                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+	                "searchreplace wordcount visualblocks visualchars code fullscreen",
+	                "insertdatetime media nonbreaking table directionality",
+	                "template paste textpattern codesample"
+	            ])
+			},
+
+			toolbar: {
+				type: String,
+				default: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media codesample | fullscreen",
+			},
+
+			menubar: {
+				type: Boolean,
+				default: true
+			},
+
+		// Binding
+
+			modelValue: {
+				type: String,
+				default: ""
 			}
 
-		}
+	})
+
+	const emit = defineEmits(['update:modelValue'])
+
+	const showEditor = ref(props.defaultShowEditor)
+
+	const value = computed({
+		get: () => props.modelValue,
+		set: (newValue) => emit('update:modelValue', newValue),
+	})
+
+	const onTranscriptionEnd = (data) => {
+
+		const sentence = data.lastSentence[0].toLowerCase() + data.lastSentence.slice(1) + ' '
+
+		value.value = value.value + ' ' + sentence
 
 	}
 

@@ -96,171 +96,143 @@
 </template>
 
 
-<script>
-import draggable from 'vuedraggable';
-import TextInputComponent from './TextInputComponent.vue';
-import SelectInputComponent from './SelectInputComponent.vue';
-import TextareaInputComponent from './TextareaInputComponent.vue';
-import EditorInputComponent from './EditorInputComponent.vue';
+<script setup>
 
-export default {
-    components: {
-        TextInputComponent,
-        SelectInputComponent,
-        TextareaInputComponent,
-        EditorInputComponent,
-        draggable
+import { computed } from 'vue'
+import draggable from 'vuedraggable'
+import TextInputComponent from './TextInputComponent.vue'
+import SelectInputComponent from './SelectInputComponent.vue'
+import TextareaInputComponent from './TextareaInputComponent.vue'
+import EditorInputComponent from './EditorInputComponent.vue'
+
+const props = defineProps({
+    modelValue: {
+        type: Array,
+        required: true
     },
-    props: {
-        modelValue: {
-            type: Array,
-            required: true
-        },
-        inputsConfig: {
-            type: Array,
-            required: true
-        },
-        label: {
-            type: String,
-            default: ''
-        },
-        addButtonLabel: {
-            type: String,
-            default: ''
-        },
-        removeButtonLabel: {
-            type: String,
-            default: ''
-        },
-        hasSufix: {
-            type: Boolean,
-            default: true
-        }
+    inputsConfig: {
+        type: Array,
+        required: true
     },
-    computed: {
-        value: {
-            get() {
-                return this.modelValue;
-            },
-            set(value) {
-                this.$emit('update:modelValue', value);
-            }
-        }
+    label: {
+        type: String,
+        default: ''
     },
-    methods: {
-        resolveComponent(type) {
-            const components = {
-                text: 'TextInputComponent',
-                editor: 'EditorInputComponent',
-                select: 'SelectInputComponent',
-                textarea: 'TextareaInputComponent',
-            };
-            return components[type] || 'div';
-        },
-        addGroup() {
-            const newGroup = { _collapsed: false };
-            this.inputsConfig.forEach(field => {
-                newGroup[field.key] = '';
-            });
-            newGroup.__draggable_key = Date.now() + Math.random();
-            this.value.push(newGroup);
-        },
-        duplicateGroup(index) {
-            const original = this.value[index];
-            const clone = { ...original, _collapsed: false, __draggable_key: Date.now() + Math.random() };
-            this.value.splice(index + 1, 0, clone);
-        },
-        removeGroup(index) {
-            this.value.splice(index, 1);
-        },
-        getFieldAttributes(field, groupIndex, fieldIndex) {
-            let label = this.hasSufix ? `${field.attributes.label} #${groupIndex + 1}` : field.attributes.label;
-            return {
-                ...field.attributes,
-                id: `${field.key}-${groupIndex}-${fieldIndex}`,
-                name: `${field.key}-${groupIndex}-${fieldIndex}`,
-                label: label,
-            };
-        },
-        handlePaste(event, groupIndex, field) {
-            if (!field?.attributes?.enablePasteList) return;
-
-            const clipboardData = event.clipboardData || window.clipboardData;
-            const pastedText = clipboardData.getData('text') || '';
-            const items = pastedText
-                .split(pastedText.includes('\n') ? '\n' : ',')
-                .map(i => i.trim())
-                .filter(Boolean);
-
-            if (items.length <= 1) return;
-            event.preventDefault();
-
-            const confirmSplit = confirm(
-                `Se detectaron múltiples valores para "${field.attributes.label}".\n¿Deseas dividirlos en grupos separados?`
-            );
-            if (!confirmSplit) return;
-
-            this.value[groupIndex][field.key] = items[0];
-
-            for (let i = 1; i < items.length; i++) {
-                const newGroup = { _collapsed: false, __draggable_key: Date.now() + i };
-                this.inputsConfig.forEach(f => {
-                    newGroup[f.key] = f.key === field.key ? items[i] : '';
-                });
-                this.value.splice(groupIndex + i, 0, newGroup);
-            }
-        }
+    addButtonLabel: {
+        type: String,
+        default: ''
+    },
+    removeButtonLabel: {
+        type: String,
+        default: ''
+    },
+    hasSufix: {
+        type: Boolean,
+        default: true
     }
-}
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const value = computed({
+    get: () => props.modelValue,
+    set: (newValue) => emit('update:modelValue', newValue),
+})
+
 /**
- * Usage:
-    <dynamic-group-input-component 
-        :label="__('Learning Outcomes')"
-        v-model="groupInputs"
-        :inputs-config="[
-            {
-                key: 'question',
-                type: 'text',
-                attributes: {
-                    type: 'text',
-                    name: 'question',
-                    label: 'Question',
-                    placeholder: 'Question',
-                    validators: 'required length',
-                    min_length: 3,
-                    max_length: 100,
-                    customClass: inputClass
-                }
-            },
-            {
-                key: 'answer',
-                type: 'editor',
-                attributes: {
-                    id: 'answer',
-                    file: true,
-                    uploadUrl: fileUploadUrl,
-                    onFileUploadSuccess: handleFileUploadSuccess,
-                    label: 'Answer',
-                    placeholder: 'Answer',
-                    height: 200,
-                    validators: 'required'
-                }
-            },
-            {
-                key: 'category',
-                type: 'select',
-                attributes: {
-                    name: 'category',
-                    label: 'Category',
-                    customClass: inputClass
-                },
-                options: [
-                    { value: 'option1', text: 'Option 1' },
-                    { value: 'option2', text: 'Option 2' },
-                    { value: 'option3', text: 'Option 3' }
-                ]
-            }
-        ]" 
-    />
+ * Devolvia el nombre del componente como cadena, lo que exige que este
+ * registrado globalmente. Con <script setup> los componentes son locales, asi
+ * que se devuelve el objeto.
  */
+const COMPONENTS = {
+    text: TextInputComponent,
+    editor: EditorInputComponent,
+    select: SelectInputComponent,
+    textarea: TextareaInputComponent,
+}
+
+const resolveComponent = (type) => COMPONENTS[type] ?? 'div'
+
+const emptyGroup = (overrides = {}) => {
+
+    const group = { _collapsed: false, __draggable_key: Date.now() + Math.random() }
+
+    props.inputsConfig.forEach((field) => {
+        group[field.key] = ''
+    })
+
+    return { ...group, ...overrides }
+
+}
+
+// Antes se hacia push/splice sobre el array del prop, es decir mutandolo.
+const addGroup = () => emit('update:modelValue', [...props.modelValue, emptyGroup()])
+
+const duplicateGroup = (index) => {
+
+    const clone = {
+        ...props.modelValue[index],
+        _collapsed: false,
+        __draggable_key: Date.now() + Math.random(),
+    }
+
+    const next = [...props.modelValue]
+
+    next.splice(index + 1, 0, clone)
+
+    emit('update:modelValue', next)
+
+}
+
+const removeGroup = (index) => emit(
+    'update:modelValue',
+    props.modelValue.filter((_, position) => position !== index)
+)
+
+const getFieldAttributes = (field, groupIndex, fieldIndex) => ({
+    ...field.attributes,
+    id: `${field.key}-${groupIndex}-${fieldIndex}`,
+    name: `${field.key}-${groupIndex}-${fieldIndex}`,
+    label: props.hasSufix ? `${field.attributes.label} #${groupIndex + 1}` : field.attributes.label,
+})
+
+const handlePaste = (event, groupIndex, field) => {
+
+    if (! field?.attributes?.enablePasteList) {
+        return
+    }
+
+    const pastedText = (event.clipboardData ?? window.clipboardData)?.getData('text') ?? ''
+
+    const items = pastedText
+        .split(pastedText.includes('\n') ? '\n' : ',')
+        .map((item) => item.trim())
+        .filter(Boolean)
+
+    if (items.length <= 1) {
+        return
+    }
+
+    event.preventDefault()
+
+    const confirmSplit = confirm(
+        `Se detectaron multiples valores para "${field.attributes.label}".\n¿Deseas dividirlos en grupos separados?`
+    )
+
+    if (! confirmSplit) {
+        return
+    }
+
+    const next = [...props.modelValue]
+
+    next[groupIndex] = { ...next[groupIndex], [field.key]: items[0] }
+
+    for (let i = 1; i < items.length; i++) {
+        next.splice(groupIndex + i, 0, emptyGroup({ [field.key]: items[i] }))
+    }
+
+    emit('update:modelValue', next)
+
+}
+
 </script>

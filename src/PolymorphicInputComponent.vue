@@ -124,8 +124,10 @@
 
 </template>
 
-<script>
-		
+<script setup>
+
+	import { computed, ref, useId } from 'vue'
+
 	import CheckboxInputComponent from './CheckboxInputComponent.vue'
 	import SingleCheckboxInputComponent from './SingleCheckboxInputComponent.vue'
 	import MultiCheckboxInputComponent from './MultiCheckboxInputComponent.vue'
@@ -139,136 +141,61 @@
 	import TextareaInputComponent from './TextareaInputComponent.vue'
 	import TextInputComponent from './TextInputComponent.vue'
 
-	export default {
+	const componentProps = defineProps({
 
-		components: {
-
-			TextInputComponent,
-
-			CheckboxInputComponent,
-
-			SingleCheckboxInputComponent,
-
-			MultiCheckboxInputComponent,
-
-			EditorInputComponent,
-
-			FileInputComponent,
-
-			RadioInputComponent,
-
-			SelectInputComponent,
-
-			SimpleFileInputComponent,
-
-			StarsInputComponent,
-
-			SwitchComponent,
-
-			TextareaInputComponent,
-
-		},
-
+		// El nombre del prop es literalmente "props"; se conserva por
+		// compatibilidad con quien ya lo usa.
 		props: {
-
-			props: {
-				type: Object,
-				required: true
-			},
-
-			modelValue: {
-				default: ""
-			}
-
+			type: Object,
+			required: true
 		},
 
-		emits: ['update:modelValue', 'input', 'enter', 'focus', 'blur', 'save'],
-
-		data() {
-
-			return {
-
-				id: chance.hash(),
-
-				data: undefined,
-
-				showSaveButton: false,
-
-			}
-
-		},
-
-		computed: {
-
-			value: {
-
-				get() {
-					
-					return this.modelValue;
-
-				},
-
-				set(value){
-
-					this.showSaveButton = true;
-
-					this.data = value;
-
-					this.$emit('update:modelValue', value);
-
-				}
-
-			},
-
-		},
-
-		methods: {
-
-			optionsKeyPair(options) {
-
-				return options.map(option => {
-
-					return {id: option, name: option}
-
-				});
-
-			},
-
-			stringToArray(value) {
-
-				if(value) {
-
-					return  JSON.parse(value);
-
-				} else {
-
-					return [];
-
-				}
-
-			},
-
-			uploadFile(data) {
-
-				this.value = data[0].id;
-
-			},
-
-			checkboxSubmit(data) {
-
-				this.$emit('save', data);
-
-			},
-
-			saveResponse() {
-
-				this.showSaveButton = false;
-
-				this.$emit('save', this.data);
-
-			},
-
+		modelValue: {
+			default: ""
 		}
+
+	})
+
+	const emit = defineEmits(['update:modelValue', 'input', 'enter', 'focus', 'blur', 'save'])
+
+	// Antes se generaba con la global chance.hash(), que obligaba a que la
+	// aplicacion anfitriona la pusiera en window.
+	const id = useId()
+
+	const data = ref(undefined)
+
+	const showSaveButton = ref(false)
+
+	const value = computed({
+
+		get: () => componentProps.modelValue,
+
+		set: (newValue) => {
+
+			showSaveButton.value = true
+			data.value = newValue
+
+			emit('update:modelValue', newValue)
+
+		},
+
+	})
+
+	const optionsKeyPair = (options) => options.map((option) => ({ id: option, name: option }))
+
+	const stringToArray = (value) => value ? JSON.parse(value) : []
+
+	const uploadFile = (files) => {
+		value.value = files[0].id
+	}
+
+	const checkboxSubmit = (payload) => emit('save', payload)
+
+	const saveResponse = () => {
+
+		showSaveButton.value = false
+
+		emit('save', data.value)
 
 	}
 
