@@ -20,60 +20,29 @@
 
 </template>
 
-<script>
+<script setup>
 
-    export default {
+    import { computed, ref } from 'vue'
 
-        props: {
+    defineProps({
+        customClass: { type: String, required: false, default: null },
+        inputName: { type: String, default: 'file' },
+        label: { type: String, default: 'Seleccionar archivo' }
+    })
 
-            customClass: {
-                type: String,
-                required: false,
-            },
+    const emit = defineEmits(['input'])
 
-            inputName: {
-                type: String,
-                default: 'file'
-            },
+    const file = ref(null)
 
-            label: {
-                type: String,
-                default: 'Seleccionar archivo'
-            }
+    const hasFile = computed(() => Boolean(file.value?.size))
 
-        },
+    const handleFileChange = (event) => {
 
-        emits: ['input'],
+        // Cancelar el dialogo deja la lista vacia; antes se asignaba
+        // undefined y la plantilla reventaba al leer file.size.
+        file.value = event.target.files?.[0] ?? null
 
-        data() {
-
-            return {
-                file: {},
-            }
-
-        },
-
-        computed: {
-
-            hasFile() {
-
-                return (this.file.size > 0);
-
-            }
-
-        },
-
-        methods: {
-
-            handleFileChange(e) {
-
-                this.file = e.target.files[0];
-
-                this.$emit('input', e.target.files[0])
-
-            }
-
-        }
+        emit('input', file.value)
 
     }
 
