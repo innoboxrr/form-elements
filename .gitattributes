@@ -1,0 +1,11 @@
+# El repositorio es LF, tambien en un checkout de Windows.
+#
+# Sin esto, autocrlf reescribe el arbol de trabajo al clonar y cualquier diff
+# contra otra copia sale como si todos los archivos hubieran cambiado.
+* text=auto eol=lf
+
+# Binarios, sin tocar.
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
