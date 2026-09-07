@@ -48,164 +48,126 @@
 
 </template>
 
-<script>
+<script setup>
 
-	export default {
-    
-	    props: {
+	import { computed } from 'vue'
 
-	        max: { 
-	        	type: Number, 
-	        	required: false, 
-	        	default: 5 
-	        },
+	const props = defineProps({
 
-	        modelValue: { 
-	        	type: Number, 
-	        	required: false, 
-	        	default: 0 
-	        },
-
-	        name: { 
-	        	type: String, 
-	        	required: false, 
-	        	default: "rating" 
-	        },
-
-	        char: { 
-	        	type: String, 
-	        	required: false, 
-	        	default: "★" 
-	        },
-
-	        inactiveChar: { 
-	        	type: String, 
-	        	required: false, 
-	        	default: null 
-	        },
-
-	        readonly: { 
-	        	type: Boolean, 
-	        	required: false, 
-	        	default: false 
-	        },
-
-	        activeColor: { 
-	        	type: String, 
-	        	required: false, 
-	        	default: null 
-	        },
-
-	        inactiveColor: { 
-	        	type: String, 
-	        	required: false, 
-	        	default: null 
-	        },
-
-	        shadowColor: { 
-	        	type: String, 
-	        	required: false, 
-	        	default: null 
-	        },
-
-	        hoverColor: { 
-	        	type: String, 
-	        	required: false, 
-	        	default: null 
-	        },
-
-	        starsSize: {
-	        	type: String,
-	        	required: false,
-	        	default: '50px',
-	        }
-
+	    max: {
+	    	type: Number,
+	    	required: false,
+	    	default: 5
 	    },
 
-	    emits: ['input', 'update:modelValue'],
-
-	    computed: {
-
-	    	value: {
-
-				get() {
-					return this.modelValue;
-				},
-
-				set(value){
-					this.$emit('update:modelValue', value);
-				}
-
-			},
-	       
-	        ratingChars() {
-
-	            return Array.from(this.char);
-
-	        },
-	       
-	        inactiveRatingChars() {
-
-	            /* Default to ratingChars if no inactive characters have been provided */
-	            return this.inactiveChar ? Array.from(this.inactiveChar) : this.ratingChars;
-
-	        },
-	        
-	        notouch() {
-
-	            /* For iPhone specifically but really any touch device, there is no true hover state, disables any pseudo-hover activity. */
-	            return typeof document !== "undefined" && !("ontouchstart" in document.documentElement);
-
-	        },
-	        
-	        mapCssProps() {
-
-	            var result = {};
-
-	            if (this.activeColor)
-	                result["--active-color"] = this.activeColor;
-
-	            if (this.inactiveColor)
-	                result["--inactive-color"] = this.inactiveColor;
-
-	            if (this.shadowColor)
-	                result["--shadow-color"] = this.shadowColor;
-
-	            if (this.hoverColor)
-	                result["--hover-color"] = this.hoverColor;
-
-	            result["--stars-size"] = this.starsSize;
-
-	            return result;
-
-	        },
-
+	    modelValue: {
+	    	type: Number,
+	    	required: false,
+	    	default: 0
 	    },
 
-	    methods: {
-	    
-	        updateInput(v) {
-
-	            this.$emit("input", parseInt(v, 10));
-
-	        },
-	    
-	        getActiveLabel(x) {
-
-	            var s = this.ratingChars;
-	            return s[Math.min(s.length - 1, x - 1)];
-
-	        },
-	    
-	        getInactiveLabel(x) {
-
-	            var s = this.inactiveRatingChars;
-	            return s[Math.min(s.length - 1, x - 1)];
-
-	        },
-	    
+	    name: {
+	    	type: String,
+	    	required: false,
+	    	default: "rating"
 	    },
 
+	    char: {
+	    	type: String,
+	    	required: false,
+	    	default: "★"
+	    },
+
+	    inactiveChar: {
+	    	type: String,
+	    	required: false,
+	    	default: null
+	    },
+
+	    readonly: {
+	    	type: Boolean,
+	    	required: false,
+	    	default: false
+	    },
+
+	    activeColor: {
+	    	type: String,
+	    	required: false,
+	    	default: null
+	    },
+
+	    inactiveColor: {
+	    	type: String,
+	    	required: false,
+	    	default: null
+	    },
+
+	    shadowColor: {
+	    	type: String,
+	    	required: false,
+	    	default: null
+	    },
+
+	    hoverColor: {
+	    	type: String,
+	    	required: false,
+	    	default: null
+	    },
+
+	    starsSize: {
+	    	type: String,
+	    	required: false,
+	    	default: '50px',
+	    }
+
+	})
+
+	const emit = defineEmits(['input', 'update:modelValue'])
+
+	const value = computed({
+		get: () => props.modelValue,
+		set: (newValue) => emit('update:modelValue', newValue),
+	})
+
+	const ratingChars = computed(() => Array.from(props.char))
+
+	/* Default to ratingChars if no inactive characters have been provided */
+	const inactiveRatingChars = computed(
+		() => props.inactiveChar ? Array.from(props.inactiveChar) : ratingChars.value
+	)
+
+	/* En un dispositivo tactil no hay hover real: desactiva el pseudo-hover. */
+	const notouch = computed(
+		() => typeof document !== "undefined" && ! ("ontouchstart" in document.documentElement)
+	)
+
+	const mapCssProps = computed(() => {
+
+		const result = {}
+
+		if (props.activeColor) result["--active-color"] = props.activeColor
+		if (props.inactiveColor) result["--inactive-color"] = props.inactiveColor
+		if (props.shadowColor) result["--shadow-color"] = props.shadowColor
+		if (props.hoverColor) result["--hover-color"] = props.hoverColor
+
+		result["--stars-size"] = props.starsSize
+
+		return result
+
+	})
+
+	const updateInput = (v) => emit("input", parseInt(v, 10))
+
+	const getActiveLabel = (x) => {
+		const chars = ratingChars.value
+
+		return chars[Math.min(chars.length - 1, x - 1)]
+	}
+
+	const getInactiveLabel = (x) => {
+		const chars = inactiveRatingChars.value
+
+		return chars[Math.min(chars.length - 1, x - 1)]
 	}
 
 </script>
