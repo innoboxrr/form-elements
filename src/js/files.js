@@ -1,6 +1,5 @@
 function validateFile(file, rules) {
 
-	console.log(file.type);
 
 	let mimeValidation = rules.validMimes.includes(file.type);
 
