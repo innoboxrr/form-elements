@@ -15,52 +15,51 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-      avatarUrl: {
-          type: String,
-          required: true,
-      },
-      uploadUrl: {
-          type: String,
-          required: true,
-      },
-      uploadMethod: {
-          type: String,
-          default: 'POST', // Puedes personalizar el método si es necesario
-      },
-  },
-  emits: ['upload'],
-  methods: {
-      triggerFileInput() {
-          this.$refs.fileInput.click();
-      },
-      async uploadAvatar() {
-          const file = this.$refs.fileInput.files[0];
-          if (!file) return;
+<script setup>
 
-          try {
-              const formData = new FormData();
-              formData.append('file', file); 
+import { ref } from 'vue'
 
-              const response = await fetch(this.uploadUrl, {
-                  method: this.uploadMethod,
-                  body: formData,
-              });
+const props = defineProps({
+    avatarUrl: { type: String, required: true },
+    uploadUrl: { type: String, required: true },
+    uploadMethod: { type: String, default: 'POST' },
+})
 
-              if (response.ok) {
-				  const data = await response.json();
-				  this.$emit('upload', data);
-              } else {
-                  console.error('Error al subir el avatar:', response.statusText);
-              }
-          } catch (error) {
-              console.error('Error al subir el avatar:', error);
-          }
-      },
-  },
-};
+const emit = defineEmits(['upload'])
+
+const fileInput = ref(null)
+
+const triggerFileInput = () => fileInput.value?.click()
+
+const uploadAvatar = async () => {
+
+    const file = fileInput.value?.files?.[0]
+
+    if (! file) return
+
+    try {
+
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await fetch(props.uploadUrl, {
+            method: props.uploadMethod,
+            body: formData,
+        })
+
+        if (! response.ok) {
+            console.error('Error al subir el avatar:', response.statusText)
+            return
+        }
+
+        emit('upload', await response.json())
+
+    } catch (error) {
+        console.error('Error al subir el avatar:', error)
+    }
+
+}
+
 </script>
 
 <style scoped>

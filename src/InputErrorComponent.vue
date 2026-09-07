@@ -4,10 +4,11 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'InputError',
-    props: {
+<script setup>
+
+    import { computed } from 'vue'
+
+    const props = defineProps({
         errors: {
             type: [Object, Array],
             required: true
@@ -16,13 +17,10 @@ export default {
             type: String,
             required: true
         }
-    },   
-    computed: {
-        hasErrors() {
-            return this.errors && this.errors[this.type] && this.errors[this.type].length > 0;
-        }
-    }
-}
+    })
+
+    const hasErrors = computed(() => Boolean(props.errors?.[props.type]?.length))
+
 </script>
 
 <style scoped>

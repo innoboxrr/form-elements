@@ -13,65 +13,31 @@
     />
 </template>
 
-<script>
+<script setup>
+
+    import { computed } from 'vue'
     import SelectSearchInputComponent from './SelectSearchInputComponent.vue'
     import timezoneOptions from './js/timezone.js'
 
-    export default {
-        components: {
-            SelectSearchInputComponent,
-        },
-        props: {
-            label: {
-                type: String,
-                default: ''
-            },
-            placeholder: {
-                type: String,
-                default: 'Select a timezone'
-            },
-            help: {
-                type: String,
-                default: null
-            },
-            name: {
-                type: String,
-                required: true
-            },
-            multiple: {
-                type: Boolean,
-                default: false
-            },
-            size: {
-                type: Number,
-                default: null
-            },
-            validators: {
-                type: String,
-                default: ''
-            },
-            modelValue: {
-                type: [String, Number, Array, Object],
-                default: ""
-            }
-        },
-        data() {
-            return {
-                timezoneOptions
-            }
-        },
-        emits: ['update:modelValue'],
-        computed: {
-            value: {
-                get() {
-                    return this.modelValue
-                },
-                set(value) {
-                    this.$emit('update:modelValue', value.value)
-                }
-            }
-        }
-    }
+    const props = defineProps({
+        label: { type: String, default: '' },
+        placeholder: { type: String, default: 'Select a timezone' },
+        help: { type: String, default: null },
+        name: { type: String, required: true },
+        multiple: { type: Boolean, default: false },
+        size: { type: Number, default: null },
+        validators: { type: String, default: '' },
+        modelValue: { type: [String, Number, Array, Object], default: "" }
+    })
+
+    const emit = defineEmits(['update:modelValue'])
+
+    const value = computed({
+        get: () => props.modelValue,
+        // SelectSearch entrega la opcion completa; se propaga solo su valor.
+        set: (option) => emit('update:modelValue', option?.value ?? option),
+    })
+
 </script>
 
 <style>

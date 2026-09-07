@@ -27,57 +27,24 @@
 
 </template>
 
-<script>
-    
-    export default {
+<script setup>
 
-        props: {
+    import { ref } from 'vue'
 
-            multiple: {
-                type: Boolean,
-                default: false,
-            },
+    defineProps({
+        multiple: { type: Boolean, default: false },
+        mainText: { type: String, default: 'Arrastra y suelta el archivo aqui' },
+        subText: { type: String, default: 'o haz clic para seleccionar los archivos.' },
+    })
 
-            mainText: {
-                type: String,
-                default: 'Arrastra y suelta el archivo aquí'
-            },
+    const emit = defineEmits(['change'])
 
-            subText: {
-                type: String,
-                default: 'o haz clic para seleccionar los archivos.'
-            },
+    const fileInput = ref(null)
 
-        },
+    const openFileDialog = () => fileInput.value?.click()
 
-        emits: ['change'],
+    const handleDrop = (event) => emit('change', Array.from(event.dataTransfer.files))
 
-        methods: {
-
-            openFileDialog() {
-                
-                this.$refs.fileInput.click();
-
-            },
-
-            handleDrop(event) {
-                
-                const files = Array.from(event.dataTransfer.files);
-
-                this.$emit('change', files);
-
-            },
-
-            handleFileChange(event) {
-                
-                const files = Array.from(event.target.files);
-
-                this.$emit('change', files);
-
-            },
-
-        }
-
-    }
+    const handleFileChange = (event) => emit('change', Array.from(event.target.files))
 
 </script>
