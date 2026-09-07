@@ -1,12 +1,13 @@
 <template>
     <div v-if="hasErrors">
-        <p v-for="error in errors[type]" :key="error" class="text-red-600 font-bold">{{ error }}</p>
+        <p v-for="error in errors[type]" :key="error" :class="theme.error">{{ error }}</p>
     </div>
 </template>
 
 <script setup>
 
     import { computed } from 'vue'
+    import { useTheme } from './composables/useTheme.js'
 
     const props = defineProps({
         errors: {
@@ -18,6 +19,8 @@
             required: true
         }
     })
+
+    const theme = useTheme()
 
     const hasErrors = computed(() => Boolean(props.errors?.[props.type]?.length))
 

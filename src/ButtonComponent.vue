@@ -4,7 +4,7 @@
 
         <button
 			:type="type"
-            :class="customClass"
+            :class="buttonClass"
             :disabled="disabled">
 
             {{ value }}
@@ -17,11 +17,13 @@
 
 <script setup>
 
-	defineProps({
+	import { useThemeClass } from './composables/useTheme.js'
+
+	const props = defineProps({
 		customClass: {
 			type: String,
 			required: false,
-			default: "uk-button uk-width-1-1 button"
+			default: null
 		},
 		disabled: {
 			type: Boolean,
@@ -39,5 +41,7 @@
 			default: "submit"
 		}
 	})
+
+	const buttonClass = useThemeClass('button', () => props.customClass)
 
 </script>

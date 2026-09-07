@@ -17,7 +17,7 @@
 
     import { computed } from 'vue'
     import SelectSearchInputComponent from './SelectSearchInputComponent.vue'
-    import timezoneOptions from './js/timezone.js'
+    import { timezones as timezoneOptions } from 'innoboxrr-form-core'
 
     const props = defineProps({
         label: { type: String, default: '' },

@@ -12,7 +12,7 @@
 			</label>
 
             <select
-            	:class="customClass"
+            	:class="selectClass"
             	:name="name"
             	:multiple="multiple"
             	:data-validators="validators"
@@ -32,6 +32,7 @@
 <script setup>
 
 	import { computed } from 'vue'
+	import { useThemeClass } from './composables/useTheme.js'
 
 	const props = defineProps({
 		label: {
@@ -47,7 +48,7 @@
 		customClass: {
 			type: String,
 			required: false,
-			default: 'uk-select uk-form-large uk-border-rounded'
+			default: null
 		},
 		name: {
 			type: String,
@@ -73,6 +74,8 @@
 	})
 
 	const emit = defineEmits(['update:modelValue'])
+
+	const selectClass = useThemeClass('select', () => props.customClass)
 
 	const value = computed({
 		get: () => props.modelValue,

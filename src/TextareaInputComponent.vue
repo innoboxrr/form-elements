@@ -7,8 +7,7 @@
         	<label class=" ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ label }}</label>
 
             <textarea
-            	class="uk-textarea uk-form-large uk-border-rounded"
-            	:class="customClass"
+            	:class="areaClass"
             	:rows="rows"
             	:name="name"
             	:placeholder="placeholder"
@@ -26,6 +25,7 @@
 <script setup>
 
 	import { computed } from 'vue'
+	import { useThemeClass } from './composables/useTheme.js'
 
 	const props = defineProps({
 		label: {
@@ -73,6 +73,8 @@
 	})
 
 	const emit = defineEmits(['update:modelValue'])
+
+	const areaClass = useThemeClass('textarea', () => props.customClass)
 
 	const value = computed({
 		get: () => props.modelValue,

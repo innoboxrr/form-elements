@@ -141,7 +141,7 @@
 <script setup>
 
     import { computed, ref, watch } from 'vue'
-    import { validateFiles } from './js/files.js'
+    import { describeFiles } from 'innoboxrr-form-core'
 
     const props = defineProps({
         uploadUrl: {

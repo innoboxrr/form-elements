@@ -40,11 +40,20 @@ describe('TextareaInputComponent', () => {
      * personalizada se suma, no la sustituye: es distinto de los demas
      * componentes y conviene dejarlo fijado.
      */
-    it('suma la clase personalizada a la base', () => {
+    /**
+     * El paquete era inconsistente: unos controles reemplazaban customClass y
+     * otros la sumaban a una clase incrustada. Ahora la base sale del tema y
+     * customClass la reemplaza, igual en todos.
+     */
+    it('la clase base sale del tema', () => {
+        expect(factory().find('textarea').classes()).toContain('uk-textarea')
+    })
+
+    it('la clase personalizada reemplaza a la del tema', () => {
         const classes = factory({ customClass: 'mi-clase' }).find('textarea').classes()
 
-        expect(classes).toContain('uk-textarea')
         expect(classes).toContain('mi-clase')
+        expect(classes).not.toContain('uk-textarea')
     })
 
     it('refleja modelValue y emite update:modelValue', async () => {

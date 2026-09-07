@@ -3,8 +3,7 @@
 	<div class="uk-margin">
         <label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
             <input
-                class="uk-radio"
-                :class="customClass"
+                :class="radioClass"
                 type="radio"
                 :name="name"
                 :data-validators="validators"
@@ -23,6 +22,7 @@
 <script setup>
 
 	import { computed } from 'vue'
+	import { useThemeClass } from './composables/useTheme.js'
 
 	const props = defineProps({
 
@@ -71,6 +71,8 @@
 	})
 
 	const emit = defineEmits(['update:modelValue'])
+
+	const radioClass = useThemeClass('radio', () => props.customClass)
 
 	// El getter devolvia la propia computed en lugar de modelValue, asi que el
 	// radio nunca aparecia seleccionado a partir del valor enlazado.

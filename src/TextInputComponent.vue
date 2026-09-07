@@ -20,7 +20,7 @@
 
                 <input
                 	:data-uid="uid"
-                	:class="[customClass, isPassword ? 'fe-has-toggle' : '']"
+                	:class="[inputClass, isPassword ? 'fe-has-toggle' : '']"
                 	:type="effectiveType"
                 	:name="name"
                 	:placeholder="placeholder"
@@ -63,6 +63,7 @@
 
 	import { computed, ref, useId } from 'vue'
 	import { formatDirective as vFormat } from 'innoboxrr-maskjs/vue'
+	import { useThemeClass } from './composables/useTheme.js'
 
 	const props = defineProps({
 		label: {
@@ -83,7 +84,7 @@
 		customClass: {
 			type: String,
 			required: false,
-			default: 'uk-input uk-form-large uk-border-rounded'
+			default: null
 		},
 		type: {
 			type: String,
@@ -144,6 +145,10 @@
 	// Antes se usaba la global `chance.hash()`, que obligaba a que la app
 	// anfitriona la pusiera en window: el componente no se podia montar fuera
 	// de ella. useId() es la primitiva de Vue para esto.
+	// La clase sale del tema del proyecto; customClass queda para el
+	// caso puntual.
+	const inputClass = useThemeClass('input', () => props.customClass)
+
 	const uid = useId()
 
 	const showPassword = ref(false)

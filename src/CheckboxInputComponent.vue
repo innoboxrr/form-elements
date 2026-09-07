@@ -5,8 +5,7 @@
         <label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
 
             <input
-                class="uk-checkbox"
-                :class="customClass"
+                :class="boxClass"
                 type="checkbox"
                 :name="name"
                 :data-validators="validators"
@@ -26,6 +25,7 @@
 <script setup>
 
 	import { computed } from 'vue'
+	import { useThemeClass } from './composables/useTheme.js'
 
 	const props = defineProps({
 		customClass: {
@@ -58,6 +58,8 @@
 	})
 
 	const emit = defineEmits(['update:modelValue'])
+
+	const boxClass = useThemeClass('checkbox', () => props.customClass)
 
 	/**
 	 * El getter devolvia `this.value`, es decir la propia computed: Vue corta
