@@ -40,146 +40,110 @@
 
 </template>
 
-<script>
+<script setup>
 
-    export default {
+    import { onMounted, ref, shallowRef } from 'vue'
 
-        props: {
+    const props = defineProps({
 
-            lang: {
+        lang: {
 
-                type: String,
+            type: String,
 
-                default: 'es-ES'
+            default: 'es-ES'
 
-            }
+        }
 
-        },
+    })
 
-        emits: ['onTranscriptionEnd', 'onRuntimeTranscription'],
+    const emit = defineEmits(['onTranscriptionEnd', 'onRuntimeTranscription'])
 
-        data() {
+    const showInterface = ref(false)
+    const runtimeTranscription = ref('')
+    const transcription = ref([])
+    const isRecording = ref(false)
 
-            return {
+    // Objeto del navegador: no debe hacerse reactivo en profundidad.
+    const recognition = shallowRef(null)
 
-                showInterface: false,
+    const startRecognition = () => {
 
-                runtimeTranscription: '',
+        recognition.value?.start()
 
-                transcription: [],
-
-                recognition: null,
-
-                isRecording: false,
-
-            }
-
-        },
-
-        mounted() {
-
-            this.checkApi();
-
-        },
-
-        methods: {
-
-            startRecognition() {
-
-                //this.checkApi();
-
-                this.recognition.start();
-
-                this.isRecording = true;
-
-            },
-
-            stopRecognition() {
-
-                this.isRecording = false;
-
-                this.recognition.stop();
-
-                // this.recognition = null;
-
-            },
-
-            checkApi() {
-
-                window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-                if (!SpeechRecognition && "development" !== 'production') {
-
-                    throw new Error('Speech Recognition does not exist on this browser. Use Chrome or Firefox');
-
-                }
-
-                if (!SpeechRecognition) {
-
-                    console.log("No Speech Recognition");
-
-                    return;
-
-                }
-
-                this.showInterface = true;
-
-                this.recognition = new SpeechRecognition();
-
-                this.recognition.lang = this.lang;
-
-                this.recognition.interimResults = true;
-
-                // this.recognition.continuous = true;
-
-                this.recognition.addEventListener('result', event => {
-
-                    const text = Array.from(event.results)
-                        .map(result => result[0])
-                        .map(result => result.transcript)
-                        .join('');
-
-                    this.runtimeTranscription = text;
-
-                });
-
-                
-                this.recognition.addEventListener('end', () => {
-
-                    if (this.runtimeTranscription !== '') {
-
-                        this.transcription.push(this.runtimeTranscription);
-
-                        this.$emit('onTranscriptionEnd', {
-
-                            transcription: this.transcription,
-
-                            lastSentence: this.runtimeTranscription
-
-                        });
-
-                        if(this.isRecording) this.startRecognition();
-
-                    }
-
-                    this.runtimeTranscription = '';
-
-                });
-
-                this.recognition.onresult = (event) => {
-
-                    var color = event.results[0][0].transcript;
-
-                    this.$emit('onRuntimeTranscription', event.results[0]);
-
-                }
-                
-
-            }
-
-        },
+        isRecording.value = true
 
     }
+
+    const stopRecognition = () => {
+
+        isRecording.value = false
+
+        recognition.value?.stop()
+
+    }
+
+    const checkApi = () => {
+
+        const Recognition = window.SpeechRecognition ?? window.webkitSpeechRecognition
+
+        /**
+         * Antes se comprobaba `if (!SpeechRecognition && "development" !== 'production')`
+         * y lanzaba un Error. La cadena literal siempre es distinta de
+         * 'production', asi que la condicion se reducia a que la API no
+         * existiera: cualquier navegador sin reconocimiento de voz reventaba
+         * en lugar de esconder el boton, que es lo que hacia el return de
+         * abajo (inalcanzable).
+         */
+        if (! Recognition) {
+            console.warn('[innoboxrr-form-elements] Speech Recognition no esta disponible en este navegador.')
+
+            return
+        }
+
+        showInterface.value = true
+
+        const instance = new Recognition()
+
+        instance.lang = props.lang
+        instance.interimResults = true
+
+        instance.addEventListener('result', (event) => {
+
+            runtimeTranscription.value = Array.from(event.results)
+                .map((result) => result[0])
+                .map((result) => result.transcript)
+                .join('')
+
+        })
+
+        instance.addEventListener('end', () => {
+
+            if (runtimeTranscription.value !== '') {
+
+                transcription.value.push(runtimeTranscription.value)
+
+                emit('onTranscriptionEnd', {
+                    transcription: transcription.value,
+                    lastSentence: runtimeTranscription.value,
+                })
+
+                if (isRecording.value) {
+                    instance.start()
+                }
+
+            }
+
+            runtimeTranscription.value = ''
+
+        })
+
+        instance.onresult = (event) => emit('onRuntimeTranscription', event.results[0])
+
+        recognition.value = instance
+
+    }
+
+    onMounted(checkApi)
 
 </script>
 

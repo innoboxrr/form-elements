@@ -70,20 +70,14 @@
 
 </template>
 
-<script>
-	
+<script setup>
+
+	import { computed, ref, watch } from 'vue'
+	import axios from 'axios'
 	import vSelect from 'vue-select'
 	import 'vue-select/dist/vue-select.css';
 
-	export default {
-
-		components: {
-
-			vSelect,
-
-		},
-
-		props: {
+	const props = defineProps({
 			
 			// General props
 
@@ -885,104 +879,80 @@
 					default: 300 // valor por defecto en milisegundos
 				}
 
-		},
+	})
 
-		emits: ['update:modelValue', 'search'],
+	const emit = defineEmits(['update:modelValue', 'search'])
 
-		mounted() {},
+	/**
+	 * Se inicializaba en data() a partir del prop y el watcher de `options`
+	 * estaba vacio, asi que cambiar las opciones desde el padre no tenia
+	 * ningun efecto.
+	 */
+	const customOptions = ref(props.options)
 
-		created() {
-			this.debouncedSearchFn = this.debounce((search, loading) => {
-				this._onSearch(search, loading);
-			}, this.debounceTime);
-		},
+	watch(() => props.options, (value) => {
+		customOptions.value = value
+	})
 
-		data() {
-			return {
-				customOptions: this.options,
-				debouncedSearchFn: null
-			}
-		},
+	const value = computed({
+		get: () => props.modelValue,
+		set: (newValue) => emit('update:modelValue', newValue),
+	})
 
-		watch: {
+	const csrfToken = () => globalThis.csrf_token
+		?? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+		?? ''
 
-			options(val, oldVal) {}
+	const search = (loading, term) => {
 
-		},
-
-		computed: {
-
-			value: {
-
-				get() {
-					
-					return this.modelValue;
-
-				},
-
-				set(value){
-					
-					this.$emit('update:modelValue', value);
-
-				}
-
-			}
-
-		},
-
-		methods: {
-
-			onSearch(search, loading) {
-				this.debouncedSearchFn(search, loading);
-			},
-
-			_onSearch(search, loading) {
-				if (search.length > this.minSearchLength && this.ajax && this.validation(search)) {
-					loading(true);
-					this.search(loading, search)
-						.then(() => loading(false))
-						.catch(() => loading(false));
-				}
-			},
-
-			search(loading, search) {
-				return new Promise((resolve, reject) => {
-					const requestData = {
-						_token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-						paginate: 0,
-						[this.q]: this.parseBeforeSubmit(search),
-						...this.searchParams
-					};
-
-					const config = {
-						url: this.route,
-						method: this.method,
-						[this.method === 'post' ? 'data' : 'params']: requestData
-					};
-
-					axios(config).then(res => {
-						this.$emit('search', res.data);
-						this.customOptions = res.data;
-						resolve(res);
-					}).catch(error => {
-						reject(error);
-					});
-				});
-			},
-
-			debounce(func, wait) {
-				let timeout;
-				return function (...args) {
-					const later = () => {
-						timeout = null;
-						func.apply(this, args);
-					};
-					clearTimeout(timeout);
-					timeout = setTimeout(later, wait);
-				};
-			}
+		const requestData = {
+			_token: csrfToken(),
+			paginate: 0,
+			[props.q]: props.parseBeforeSubmit(term),
+			...props.searchParams
 		}
+
+		// axios se usaba como global sin importarlo.
+		return axios({
+			url: props.route,
+			method: props.method,
+			[props.method === 'post' ? 'data' : 'params']: requestData,
+		}).then((res) => {
+
+			emit('search', res.data)
+
+			customOptions.value = res.data
+
+			return res
+
+		})
+
 	}
+
+	const runSearch = (term, loading) => {
+
+		if (term.length <= props.minSearchLength || ! props.ajax || ! props.validation(term)) {
+			return
+		}
+
+		loading(true)
+
+		search(loading, term)
+			.then(() => loading(false))
+			.catch(() => loading(false))
+
+	}
+
+	let debounceTimer = null
+
+	const onSearch = (term, loading) => {
+
+		clearTimeout(debounceTimer)
+
+		debounceTimer = setTimeout(() => runSearch(term, loading), props.debounceTime)
+
+	}
+
 </script>
 
 <style>
