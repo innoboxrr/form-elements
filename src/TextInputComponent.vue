@@ -62,7 +62,7 @@
 <script setup>
 
 	import { computed, ref, useId } from 'vue'
-	import { formatDirective as vFormat } from 'innoboxrr-maskjs'
+	import { formatDirective as vFormat } from 'innoboxrr-maskjs/vue'
 
 	const props = defineProps({
 		label: {

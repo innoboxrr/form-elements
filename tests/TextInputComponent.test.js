@@ -104,6 +104,53 @@ describe('TextInputComponent', () => {
 
     })
 
+    describe('mascara', () => {
+
+        const PHONE = { mask: '(___) ___-____', format: '(***) ***-****' }
+
+        it('formatea lo que se escribe', async () => {
+            const wrapper = factory({ type: 'text', maskFormat: PHONE })
+            const input = wrapper.find('input')
+
+            await input.setValue('5512345678')
+
+            expect(input.element.value).toBe('(551) 234-5678')
+        })
+
+        /**
+         * El motor de mascaras 1.x se comia uno de cada dos caracteres al
+         * pegar: '5512345678' salia como '(524) 6__-____'.
+         */
+        it('pegar el numero entero lo coloca completo', async () => {
+            const wrapper = factory({ type: 'text', maskFormat: PHONE })
+            const input = wrapper.find('input')
+
+            input.element.value = '5512345678'
+            await input.trigger('paste')
+
+            await new Promise((resolve) => setTimeout(resolve, 0))
+
+            expect(input.element.value).toBe('(551) 234-5678')
+        })
+
+        it('anota la mascara en el DOM', () => {
+            const input = factory({ type: 'text', maskFormat: PHONE }).find('input')
+
+            expect(input.attributes('data-mask')).toBe(PHONE.mask)
+            expect(input.attributes('data-format')).toBe(PHONE.format)
+        })
+
+        it('sin mascara el valor pasa tal cual', async () => {
+            const wrapper = factory({ type: 'text' })
+            const input = wrapper.find('input')
+
+            await input.setValue('(551) suelto')
+
+            expect(input.element.value).toBe('(551) suelto')
+        })
+
+    })
+
     it('da a cada instancia de la misma app un identificador propio', () => {
         // useId() garantiza unicidad dentro de una aplicacion, que es el
         // escenario real: dos campos del mismo formulario.
