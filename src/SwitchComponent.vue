@@ -2,7 +2,7 @@
 	
 	<label class="uk-switch">
 
-      <input type="checkbox" v-model="value" @change="$emit('change', $event)">
+      <input type="checkbox" v-model="value" @change="emit('change', $event)">
 
       <div class="uk-switch-slider uk-switch-big"></div>
 
@@ -10,31 +10,22 @@
 
 </template>
 
-<script>
-	
-	export default {
+<script setup>
 
-		props: ['modelValue'],
+	import { computed } from 'vue'
 
-		emits: ['update:modelValue', 'change'],
-
-		computed: {
-
-			value: {
-
-				get() {
-					return this.modelValue
-				},
-
-				set(value) {	
-					this.$emit('update:modelValue', value)
-				}
-
-			}
-
+	const props = defineProps({
+		modelValue: {
+			default: null
 		}
+	})
 
-	}
+	const emit = defineEmits(['update:modelValue', 'change'])
+
+	const value = computed({
+		get: () => props.modelValue,
+		set: (newValue) => emit('update:modelValue', newValue),
+	})
 
 </script>
 

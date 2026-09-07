@@ -15,86 +15,48 @@
 
 </template>
 
-<script>
+<script setup>
 
     import SingleCheckboxInputComponent from './SingleCheckboxInputComponent.vue'
 
-    export default {
+    const props = defineProps({
 
-        components: {
-        
-            SingleCheckboxInputComponent,
-        
-        },
-            
-        props: {
-
-            id: {
-                type: String,
-            },
-        
-            value: {
-            
-                type: Array,
-                
-                required: true,
-            
-            },
-            
-            options: {
-            
-                type: Array,
-                
-                required: true,
-                
-                validator: (value) => {
-                
-                    const hasNameKey = value.every((option) =>
-                    
-                        Object.keys(option).includes("name")
-                    
-                    );
-                    
-                    const hasIdKey = value.every((option) =>
-                    
-                        Object.keys(option).includes("id")
-                    
-                    );
-                    
-                    return hasNameKey && hasIdKey;
-                
-                },
-            
-            },
-        
+        id: {
+            type: String,
+            default: ''
         },
 
-        emits: ["update:value"],
-        
-        methods: {
+        value: {
+            type: Array,
+            required: true,
+        },
 
-            check(optionId, checked) {
+        options: {
+            type: Array,
+            required: true,
+            validator: (value) => value.every(
+                (option) => Object.keys(option).includes('name') && Object.keys(option).includes('id')
+            ),
+        },
 
-                let options = document.querySelectorAll(`[name=input_${this.id}]`);
+    })
 
-                let values = [];
+    const emit = defineEmits(['update:value'])
 
-                options.forEach( option => {
+    // El estado se lee del DOM en lugar de mantenerlo aqui; se conserva el
+    // comportamiento para no cambiar el contrato de update:value.
+    const check = () => {
 
-                    if(option.checked) {
+        const values = []
 
-                        values.push(option.value);
-
-                    }
-
-                });
-
-                this.$emit('update:value', values);
-            
+        document.querySelectorAll(`[name=input_${props.id}]`).forEach((option) => {
+            if (option.checked) {
+                values.push(option.value)
             }
+        })
 
-        }
-    
+        emit('update:value', values)
+
     }
 
 </script>

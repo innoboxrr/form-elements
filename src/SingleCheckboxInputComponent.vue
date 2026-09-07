@@ -11,8 +11,8 @@
             :name="`input_${id}`"
             :checked="checked"
             :value="value"
-            @input.prevent="(event) => $emit('update:checked', event.target.checked)" />
-            
+            @input.prevent="(event) => emit('update:checked', event.target.checked)" />
+
             &nbsp;{{ label }}
 
         </label>
@@ -21,34 +21,32 @@
 
 </template>
 
-<script>
-    
-    export default {
-    
-        props: {
-        
-            id: {
-                type: String,
-                required: true,
-            },
+<script setup>
 
-            label: {
-                type: String,
-            },  
+    defineProps({
 
-            checked: {
-                type: Boolean,
-            },
-
-            value: {
-                default: null,
-            }
-    
+        id: {
+            type: String,
+            required: true,
         },
 
-        emits: ['update:checked'],
-    
-    }
+        label: {
+            type: String,
+            default: ''
+        },
+
+        checked: {
+            type: Boolean,
+            default: false
+        },
+
+        value: {
+            default: null,
+        }
+
+    })
+
+    const emit = defineEmits(['update:checked'])
 
 </script>
 

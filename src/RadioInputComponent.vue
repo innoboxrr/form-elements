@@ -1,19 +1,18 @@
 <template>
-	
+
 	<div class="uk-margin">
         <label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
-            <input 
-                class="uk-radio" 
+            <input
+                class="uk-radio"
                 :class="customClass"
                 type="radio"
-                :checked="checked" 
                 :name="name"
                 :data-validators="validators"
                 :value="val"
                 v-model="value">
-                
+
                 {{ text }}
-                
+
                 <slot></slot>
 
         </label>
@@ -21,71 +20,63 @@
 
 </template>
 
-<script>
-	
-	export default {
+<script setup>
 
-		props: {
-			
-			customClass: {
-				type: String,
-				required: false
-			},
-			
-			name: {
-				type: String,
-				required: true,
-			},
-			
-			validators: {
-				type: String,
-				required: false,
-			},
-			
-			text: {
-				type: String,
-				required: false,
-				default: ""
-			},
-			
-			val: {
-				type: String,
-				required: true,
-			},
-			
-			modelValue: {
-				default: ""
-			},
-			
-			checked: {
-				type: Boolean,
-				default: false,
-			}
+	import { computed } from 'vue'
 
+	const props = defineProps({
+
+		customClass: {
+			type: String,
+			required: false,
+			default: null
 		},
 
-		emits: ['update:modelValue'],
-
-		computed: {
-
-			value: {
-
-				get() {
-					
-					return this.value;
-
-				},
-
-				set(value) {
-					
-					this.$emit('update:modelValue', value)
-
-				}
-
-			}
-
+		name: {
+			type: String,
+			required: true,
 		},
 
-	}
+		validators: {
+			type: String,
+			required: false,
+			default: null
+		},
+
+		text: {
+			type: String,
+			required: false,
+			default: ""
+		},
+
+		val: {
+			type: String,
+			required: true,
+		},
+
+		modelValue: {
+			default: ""
+		},
+
+		/**
+		 * Se conserva por compatibilidad, pero ya no se enlaza al atributo:
+		 * competia con v-model, que es quien decide si el radio esta
+		 * seleccionado comparando modelValue con val.
+		 */
+		checked: {
+			type: Boolean,
+			default: false,
+		}
+
+	})
+
+	const emit = defineEmits(['update:modelValue'])
+
+	// El getter devolvia la propia computed en lugar de modelValue, asi que el
+	// radio nunca aparecia seleccionado a partir del valor enlazado.
+	const value = computed({
+		get: () => props.modelValue,
+		set: (newValue) => emit('update:modelValue', newValue),
+	})
 
 </script>

@@ -47,7 +47,9 @@
 
     // Referencia: https://github.com/zlayine/vue3-verification-code-input/blob/master/src/components/CodeInput.vue
     
-    import { defineProps, defineEmits, ref, toRef, onBeforeUpdate } from "vue";
+    // defineProps y defineEmits son macros del compilador: importarlas emite
+    // un aviso en cada build.
+    import { ref, toRef, onBeforeUpdate } from "vue";
     
     const props = defineProps({
 
