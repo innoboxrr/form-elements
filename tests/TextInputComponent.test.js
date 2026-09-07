@@ -64,11 +64,11 @@ describe('TextInputComponent', () => {
     })
 
     it('muestra el icono solo cuando se le pasa uno', () => {
-        expect(factory().find('.uk-form-icon').exists()).toBe(false)
+        expect(factory().find('.fe-field-icon').exists()).toBe(false)
 
         const wrapper = factory({ icon: 'user' })
 
-        expect(wrapper.find('.uk-form-icon').attributes('uk-icon')).toBe('icon: user')
+        expect(wrapper.find('.fe-field-icon').attributes('uk-icon')).toBe('icon: user')
     })
 
     it('muestra la ayuda como tooltip', () => {

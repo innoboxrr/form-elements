@@ -1,8 +1,8 @@
 <template>
 
-    <div class="uk-margin">
+    <div class="fe-mb">
 
-        <div class="uk-inline uk-width-1-1">
+        <div class="fe-inline fe-w-full">
 
             <label class="">{{ label }}</label>
 

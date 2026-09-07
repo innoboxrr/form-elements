@@ -47,10 +47,7 @@
                                 title="Expandir/Colapsar"
                                 class="hover:text-slate-600 dark:hover:text-slate-300 transition">
                                 <i
-                                    :class="[
-                                        'fa-solid',
-                                        !group._collapsed ? 'fa-chevron-down' : 'fa-chevron-up'
-                                    ]"></i>
+                                    :class="[ 'fa-solid', !group._collapsed ? 'fa-chevron-down' : 'fa-chevron-up' ]"></i>
                             </button>
                         </div>
                     </div>

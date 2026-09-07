@@ -1,10 +1,7 @@
 <template>
     
     <div
-        :class="{
-            'code-input-container': true,
-            [className]: !!className,
-        }">
+        :class="{ 'code-input-container': true, [className]: !!className, }">
 
         <div class="code-input">
             

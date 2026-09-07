@@ -1,12 +1,12 @@
 <template>
 
-    <div class="uk-margin">
+    <div class="fe-mb">
 
         <label :for="id + '_' + label" class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
 
         <input
             :id="id + '_' + label"
-            class="uk-checkbox"
+            class="fe-checkbox"
             type="checkbox"
             :name="`input_${id}`"
             :checked="checked"

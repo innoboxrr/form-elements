@@ -63,7 +63,7 @@
         },
         inputClass: {
             type: String,
-            default: 'uk-input uk-form-large uk-border-rounded'
+            default: 'fe-input  '
         },
         // Antes se leian de globales del anfitrion (fileUploadUrl, __()) que
         // este componente no declaraba en ningun sitio.

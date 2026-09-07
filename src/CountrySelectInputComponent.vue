@@ -27,8 +27,8 @@
 	import 'vue-tel-input/dist/vue-tel-input.css'
 
 	const props = defineProps({
-		wrapperClass: { type: String, required: false, default: 'uk-margin' },
-		containerClass: { type: String, required: false, default: 'uk-inline uk-width-1-1' },
+		wrapperClass: { type: String, required: false, default: 'fe-mb' },
+		containerClass: { type: String, required: false, default: 'fe-inline fe-w-full' },
 		labelClass: { type: String, required: false, default: 'ml-2 text-sm font-medium text-gray-900 dark:text-white' },
 		label: { type: String, required: false, default: '' },
 		defaultPhone: { type: [String, Number], default: '' },

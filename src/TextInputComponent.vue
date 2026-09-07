@@ -1,10 +1,10 @@
 <template>
 
-	<div class="uk-margin">
+	<div class="fe-mb">
 
-        <div class="uk-inline uk-width-1-1">
+        <div class="fe-inline fe-w-full">
 
-        	<label class=" ml-2 text-sm font-medium text-gray-900 dark:text-white">
+        	<label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
 				<span v-if="help" class="cursor-pointer">
 					<i :uk-tooltip="`title: ${help}`" class="fa-solid fa-circle-question"></i>
 				</span>
@@ -13,7 +13,7 @@
 
             <span
             	v-if="hasIcon"
-            	class="uk-form-icon"
+            	class="fe-field-icon"
             	:uk-icon="iconAttr"></span>
 
             <div class="fe-input-wrap">

@@ -2,9 +2,9 @@
 	
 	<div>
 
-		<div class="uk-grid-small" uk-grid>
+		<div class="fe-grid-sm" fe-grid>
 			
-			<div class="uk-width-expand">
+			<div class="fe-w-expand">
 				
 				<div v-if="['text', 'number', 'date', 'time', 'url', 'email'].includes(props.type)">
 					
@@ -43,7 +43,7 @@
 
 				<div v-if="props.type == 'radio'">
 					
-					<div class="uk-margin"><label class="">{{ props.label }}</label></div>
+					<div class="fe-mb"><label class="">{{ props.label }}</label></div>
 
 					<div v-for="option in props.options">
 						
@@ -79,7 +79,7 @@
 
 				<div v-if="props.type == 'checkbox'">
 					
-					<div class="uk-margin"><label class="">{{ props.label }}</label></div>
+					<div class="fe-mb"><label class="">{{ props.label }}</label></div>
 
 					<multi-checkbox-input-component 
 						:id="id"
@@ -91,7 +91,7 @@
 
 				<div v-if="props.type == 'file'">
 					
-					<div class="uk-margin">
+					<div class="fe-mb">
 
 						<label class="">{{ props.label }}</label>
 
@@ -110,10 +110,10 @@
 
 			<div 
 				v-if="showSaveButton" 
-				class="uk-width-auto uk-flex uk-flex-center uk-flex-middle">
+				class="fe-w-auto fe-flex fe-justify-center fe-items-center">
 
 				<i 
-					class="far fa-save fa-lg uk-text-success pointer" 
+					class="far fa-save fa-lg fe-text-success pointer" 
 					@click="saveResponse"></i>
 
 			</div>

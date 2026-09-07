@@ -5,7 +5,7 @@
         <input
             v-if="edit"
             ref="input"
-            class="uk-input uk-form-large uk-border-rounded"
+            class="fe-input"
             type="text"
             :value="valueLocal"
             @keyup.esc="cancel"

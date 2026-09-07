@@ -1,10 +1,10 @@
 <template>
 
-	<div class="uk-margin">
+	<div class="fe-mb">
 
-        <div class="uk-inline uk-width-1-1">
+        <div class="fe-inline fe-w-full">
 
-        	<label class=" ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ label }}</label>
+        	<label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ label }}</label>
 
             <textarea
             	:class="areaClass"

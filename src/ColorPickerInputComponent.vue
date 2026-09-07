@@ -1,5 +1,5 @@
 <template>
-    <div class="uk-margin">
+    <div class="fe-mb">
         <component
             :is="Picker"
             :label="label"

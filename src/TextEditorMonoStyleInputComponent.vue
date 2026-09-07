@@ -1,6 +1,6 @@
 <template>
 	
-	<div class="uk-margin">
+	<div class="fe-mb">
 
 		<div v-if="showEditor">
 			
@@ -23,9 +23,9 @@
 
 		<div v-else>
 
-			<div uk-grid>
+			<div fe-grid>
 
-				<div class="uk-width-expand">
+				<div class="fe-w-expand">
 					
 					<textarea 
 						:id="id" 
@@ -52,11 +52,11 @@
         <label>
 
 			<input 
-				class="uk-checkbox" 
+				class="fe-checkbox" 
 				type="checkbox" 
 				v-model="showEditor">
 
-			<span class="uk-text-small uk-text-meta">
+			<span class="fe-text-sm fe-text-muted">
 
 				&nbsp; Editor HTML
 

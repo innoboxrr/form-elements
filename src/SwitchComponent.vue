@@ -1,10 +1,10 @@
 <template>
 	
-	<label class="uk-switch">
+	<label class="fe-switch">
 
       <input type="checkbox" v-model="value" @change="emit('change', $event)">
 
-      <div class="uk-switch-slider uk-switch-big"></div>
+      <div class="fe-switch-slider fe-switch-lg"></div>
 
     </label>
 
@@ -31,7 +31,7 @@
 
 <style scoped>
 	
-	.uk-switch {
+	.fe-switch {
 		position: relative;
 		display: inline-block;
 		height: 19px;
@@ -39,12 +39,12 @@
 	}
 
 	/* Hide default HTML checkbox */
-	.uk-switch input {
+	.fe-switch input {
 		display:none;
 	}
 
 	/* Slider */
-	.uk-switch-slider {
+	.fe-switch-slider {
 		background-color: rgba(0,0,0,0.22);
 		position: absolute;
 		top: 0;
@@ -59,7 +59,7 @@
 	}
 	
 	/* Switch pointer */
-	.uk-switch-slider:before {
+	.fe-switch-slider:before {
 		content: '';
 		background-color: #fff;
 		position: absolute;
@@ -73,22 +73,22 @@
 	}
 
 	/* Slider active color */
-	input:checked + .uk-switch-slider {
+	input:checked + .fe-switch-slider {
 		background-color: #39f !important;
 	}
 
 	/* Pointer active animation */
-	input:checked + .uk-switch-slider:before {
+	input:checked + .fe-switch-slider:before {
 		transform: translateX(13px);
 	}
 
 	/* Style Modifier */
-	.uk-switch-slider.uk-switch-big:before {
+	.fe-switch-slider.fe-switch-lg:before {
 		transform: scale(1.2);
 		box-shadow: 0 0 6px rgba(0,0,0,0.22);
 	}
 
-	input:checked + .uk-switch-slider.uk-switch-big:before {
+	input:checked + .fe-switch-slider.fe-switch-lg:before {
 		transform: translateX(13px) scale(1.2);
 	}
 

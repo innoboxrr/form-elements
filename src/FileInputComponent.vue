@@ -10,20 +10,20 @@
 
         <div v-if="showTopPreview"> 
 
-            <div class="uk-flex uk-flex-center preview" uk-grid>
+            <div class="fe-flex fe-justify-center preview" fe-grid>
                 
                 <div :class="previewGridClass" v-for="file in fileList" :key="file.name">
 
-                    <div class="uk-position-relative uk-text-center">
+                    <div class="fe-relative fe-text-center">
                         
-                        <div class="uk-inline-clip uk-transition-toggle uk-light" tabindex="0">
+                        <div class="fe-inline-clip fe-reveal" tabindex="0">
 
-                            <img class="preview-img" :data-src="file.preview" width="180" height="180" uk-img>
+                            <img class="preview-img" :data-src="file.preview" width="180" height="180" >
 
-                            <div class="uk-position-center">
+                            <div class="fe-center-abs">
 
                                 <i 
-                                    class="fas fa-trash-alt fa-2x uk-transition-fade" 
+                                    class="fas fa-trash-alt fa-2x fe-reveal-target" 
                                     @click="deleteFile(file)"></i>
 
                             </div>
@@ -85,20 +85,20 @@
 
         <div v-if="showBottomPreview"> 
 
-            <div class="uk-flex uk-flex-center preview" uk-grid>
+            <div class="fe-flex fe-justify-center preview" fe-grid>
                 
                 <div :class="previewGridClass" v-for="file in fileList" :key="file.name">
 
-                    <div class="uk-position-relative uk-text-center">
+                    <div class="fe-relative fe-text-center">
                         
-                        <div class="uk-inline-clip uk-transition-toggle uk-light" tabindex="0">
+                        <div class="fe-inline-clip fe-reveal" tabindex="0">
 
-                            <img class="preview-img" :data-src="file.preview" width="180" height="180" uk-img>
+                            <img class="preview-img" :data-src="file.preview" width="180" height="180" >
 
-                            <div class="uk-position-center">
+                            <div class="fe-center-abs">
 
                                 <i 
-                                    class="fas fa-trash-alt fa-2x uk-transition-fade" 
+                                    class="fas fa-trash-alt fa-2x fe-reveal-target" 
                                     @click="deleteFile(file)"></i>
 
                             </div>
@@ -236,7 +236,7 @@
         },
         previewGridClass: {
             type: String,
-            default: 'uk-width-1-4@m'
+            default: 'fe-w-quarter'
         },
         showTopPreview: {
             type: Boolean,
