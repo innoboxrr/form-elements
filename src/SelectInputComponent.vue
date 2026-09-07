@@ -1,5 +1,5 @@
 <template>
-	
+
 	<div class="uk-margin">
 
         <div class="uk-inline uk-width-1-1">
@@ -11,7 +11,7 @@
 				{{ label }}
 			</label>
 
-            <select  
+            <select
             	:class="customClass"
             	:name="name"
             	:multiple="multiple"
@@ -29,66 +29,54 @@
 
 </template>
 
-<script>
-	
-	export default {
+<script setup>
 
-		props: {
-			label: {
-				type: String,
-				required: false,
-				default: ''
-			},
-			help: {
-				type: String,
-				required: false,
-				default: null
-			},
-			customClass: {
-				type: String,
-				required: false,
-				default: 'uk-select uk-form-large uk-border-rounded'
-			},
-			name: {
-				type: String,
-				required: true
-			},
-			multiple: {
-				type: Boolean,
-				default: false
-			},
-			size: {
-				type: Number,
-				default: null,
-			},
-			validators: {
-				type: String,
-				required: false,
-			},
-			modelValue: {
-				type: [String, Number, Array, Object],
-				default: ""
-			}
+	import { computed } from 'vue'
+
+	const props = defineProps({
+		label: {
+			type: String,
+			required: false,
+			default: ''
 		},
-
-		emits: ['update:modelValue'],
-
-		computed: {
-
-			value: {
-
-				get() {
-					return this.modelValue;
-				},
-
-				set(value){
-					this.$emit('update:modelValue', value);
-				}
-
-			}
-
+		help: {
+			type: String,
+			required: false,
+			default: null
+		},
+		customClass: {
+			type: String,
+			required: false,
+			default: 'uk-select uk-form-large uk-border-rounded'
+		},
+		name: {
+			type: String,
+			required: true
+		},
+		multiple: {
+			type: Boolean,
+			default: false
+		},
+		size: {
+			type: Number,
+			default: null,
+		},
+		validators: {
+			type: String,
+			required: false,
+			default: null
+		},
+		modelValue: {
+			type: [String, Number, Array, Object],
+			default: ""
 		}
+	})
 
-	}
+	const emit = defineEmits(['update:modelValue'])
+
+	const value = computed({
+		get: () => props.modelValue,
+		set: (newValue) => emit('update:modelValue', newValue),
+	})
 
 </script>
