@@ -55,13 +55,13 @@ describe('tema', () => {
     it('un cambio en caliente repinta lo ya montado', async () => {
         const wrapper = mount(TextInputComponent, { props: { type: 'text', name: 'a' } })
 
-        expect(wrapper.find('input').classes()).toContain('uk-input')
+        expect(wrapper.find('input').classes()).toContain(defaultTheme.input)
 
         setTheme({ input: 'oscuro' })
         await nextTick()
 
         expect(wrapper.find('input').classes()).toContain('oscuro')
-        expect(wrapper.find('input').classes()).not.toContain('uk-input')
+        expect(wrapper.find('input').classes()).not.toContain(defaultTheme.input)
     })
 
     it('cada control lee su propio token', () => {
@@ -94,7 +94,7 @@ describe('tema', () => {
         resetTheme()
 
         expect(mount(TextInputComponent, { props: { type: 'text', name: 'a' } }).find('input').classes())
-            .toContain('uk-input')
+            .toContain(defaultTheme.input)
     })
 })
 

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { defaultTheme } from 'innoboxrr-form-core'
 import { mount } from '@vue/test-utils'
 
 import SelectInputComponent from '../src/SelectInputComponent.vue'
@@ -30,7 +31,7 @@ describe('SelectInputComponent', () => {
     })
 
     it('aplica la clase por defecto y la personalizada', () => {
-        expect(factory().find('select').classes()).toContain('uk-select')
+        expect(factory().find('select').classes()).toContain(defaultTheme.select)
 
         expect(factory({ customClass: 'mi-clase' }).find('select').classes()).toEqual(['mi-clase'])
     })

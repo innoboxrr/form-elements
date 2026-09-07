@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { defaultTheme } from 'innoboxrr-form-core'
 import { mount } from '@vue/test-utils'
 
 import ButtonComponent from '../src/ButtonComponent.vue'
@@ -20,7 +21,7 @@ describe('ButtonComponent', () => {
     })
 
     it('aplica la clase por defecto y la personalizada', () => {
-        expect(factory().find('button').classes()).toContain('uk-button')
+        expect(factory().find('button').classes()).toContain(defaultTheme.button)
 
         expect(factory({ customClass: 'mi-clase' }).find('button').classes()).toEqual(['mi-clase'])
     })

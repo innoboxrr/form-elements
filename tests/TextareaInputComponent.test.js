@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { defaultTheme } from 'innoboxrr-form-core'
 import { mount } from '@vue/test-utils'
 
 import TextareaInputComponent from '../src/TextareaInputComponent.vue'
@@ -46,14 +47,14 @@ describe('TextareaInputComponent', () => {
      * customClass la reemplaza, igual en todos.
      */
     it('la clase base sale del tema', () => {
-        expect(factory().find('textarea').classes()).toContain('uk-textarea')
+        expect(factory().find('textarea').classes()).toContain(defaultTheme.textarea)
     })
 
     it('la clase personalizada reemplaza a la del tema', () => {
         const classes = factory({ customClass: 'mi-clase' }).find('textarea').classes()
 
         expect(classes).toContain('mi-clase')
-        expect(classes).not.toContain('uk-textarea')
+        expect(classes).not.toContain(defaultTheme.textarea)
     })
 
     it('refleja modelValue y emite update:modelValue', async () => {

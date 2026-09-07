@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { defaultTheme } from 'innoboxrr-form-core'
 import { mount } from '@vue/test-utils'
 
 import TextInputComponent from '../src/TextInputComponent.vue'
@@ -31,7 +32,7 @@ describe('TextInputComponent', () => {
     })
 
     it('aplica la clase por defecto y la personalizada', () => {
-        expect(factory().find('input').classes()).toContain('uk-input')
+        expect(factory().find('input').classes()).toContain(defaultTheme.input)
 
         expect(factory({ customClass: 'mi-clase' }).find('input').classes()).toContain('mi-clase')
     })
