@@ -8,6 +8,7 @@ import CountrySelectInputComponent from './src/CountrySelectInputComponent.vue'
 import EditorInputComponent from './src/EditorInputComponent.vue'
 import FileInputComponent from './src/FileInputComponent.vue'
 import FileDropInputComponent from './src/FileDropInputComponent.vue'
+import IconComponent from './src/IconComponent.vue'
 import MultiCheckboxInputComponent from './src/MultiCheckboxInputComponent.vue'
 import PolymorphicInputComponent from './src/PolymorphicInputComponent.vue'
 import RadioInputComponent from './src/RadioInputComponent.vue'
@@ -40,6 +41,7 @@ export default {
         app.component('EditorInputComponent', EditorInputComponent);
         app.component('FileInputComponent', FileInputComponent);
         app.component('FileDropInputComponent', FileDropInputComponent);
+        app.component('IconComponent', IconComponent);
         app.component('MultiCheckboxInputComponent', MultiCheckboxInputComponent);
         app.component('PolymorphicInputComponent', PolymorphicInputComponent);
         app.component('RadioInputComponent', RadioInputComponent);
@@ -73,6 +75,7 @@ export {
 	EditorInputComponent,
 	FileInputComponent,
 	FileDropInputComponent,
+	IconComponent,
 	MultiCheckboxInputComponent,
 	PolymorphicInputComponent,
 	RadioInputComponent,
