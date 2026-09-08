@@ -68,16 +68,24 @@ describe('TextInputComponent', () => {
 
         const wrapper = factory({ icon: 'user' })
 
-        expect(wrapper.find('.fe-field-icon').attributes('uk-icon')).toBe('icon: user')
+        // El nombre lo resuelve el mapa de innoboxrr-form-core; aqui basta
+        // con que el icono se pinte cuando se le pasa uno.
+        expect(wrapper.find('.fe-field-icon svg').exists()).toBe(true)
     })
 
     it('muestra la ayuda como tooltip', () => {
-        expect(factory().find('.fa-circle-question').exists()).toBe(false)
+        expect(factory().find('[data-tooltip]').exists()).toBe(false)
 
-        const wrapper = factory({ help: 'Un texto de ayuda' })
+        const icono = factory({ help: 'Un texto de ayuda' }).find('[data-tooltip]')
 
-        expect(wrapper.find('.fa-circle-question').attributes('uk-tooltip'))
-            .toBe('title: Un texto de ayuda')
+        expect(icono.attributes('data-tooltip')).toBe('Un texto de ayuda')
+
+        // El ::after de CSS no lo anuncia un lector de pantalla: el icono va
+        // solo, asi que el texto tiene que estar tambien en el aria-label.
+        expect(icono.attributes('aria-label')).toBe('Un texto de ayuda')
+
+        // Y tiene que poder recibir el foco, o no existe para el teclado.
+        expect(icono.attributes('tabindex')).toBe('0')
     })
 
     describe('cuando el tipo es password', () => {

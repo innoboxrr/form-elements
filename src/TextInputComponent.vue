@@ -6,15 +6,18 @@
 
         	<label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
 				<span v-if="help" class="cursor-pointer">
-					<i :uk-tooltip="`title: ${help}`" class="fa-solid fa-circle-question"></i>
+					<i
+						:class="classFor('helpIcon')"
+						:data-tooltip="help"
+						:aria-label="help"
+						tabindex="0"></i>
 				</span>
 				{{ label }}
 			</label>
 
-            <span
-            	v-if="hasIcon"
-            	class="fe-field-icon"
-            	:uk-icon="iconAttr"></span>
+            <span v-if="hasIcon" class="fe-field-icon">
+            	<IconComponent :name="icon" />
+            </span>
 
             <div class="fe-input-wrap">
 
@@ -60,6 +63,10 @@
 </template>
 
 <script setup>
+
+	import { classFor } from 'innoboxrr-form-core'
+
+	import IconComponent from './IconComponent.vue'
 
 	import { computed, ref, useId } from 'vue'
 	import { formatDirective as vFormat } from 'innoboxrr-maskjs/vue'

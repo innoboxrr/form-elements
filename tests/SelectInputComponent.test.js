@@ -53,10 +53,12 @@ describe('SelectInputComponent', () => {
     })
 
     it('muestra la ayuda como tooltip', () => {
-        expect(factory().find('.fa-circle-question').exists()).toBe(false)
+        expect(factory().find('[data-tooltip]').exists()).toBe(false)
 
-        expect(factory({ help: 'Ayuda' }).find('.fa-circle-question').attributes('uk-tooltip'))
-            .toBe('title: Ayuda')
+        const icono = factory({ help: 'Ayuda' }).find('[data-tooltip]')
+
+        expect(icono.attributes('data-tooltip')).toBe('Ayuda')
+        expect(icono.attributes('aria-label')).toBe('Ayuda')
     })
 
 })

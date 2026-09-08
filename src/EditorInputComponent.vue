@@ -6,7 +6,11 @@
 
         	<label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
 				<span v-if="help" class="cursor-pointer">
-					<i :uk-tooltip="`title: ${help}`" class="fa-solid fa-circle-question"></i>
+					<i
+						:class="classFor('helpIcon')"
+						:data-tooltip="help"
+						:aria-label="help"
+						tabindex="0"></i>
 				</span>
 				{{ label }}
 			</label>
@@ -34,6 +38,8 @@
 </template>
 
 <script setup>
+
+	import { classFor } from 'innoboxrr-form-core'
 
     import { computed } from 'vue'
     import Editor from '@tinymce/tinymce-vue'
