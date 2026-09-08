@@ -24,7 +24,7 @@
                     >
                         <div class="flex items-center gap-2">
                             <div class="cursor-move drag-handle text-slate-400">
-                                <i class="fa-solid fa-grip-vertical"></i>
+                                <IconComponent name="drag" />
                             </div>
                             <h4 class="text-md font-semibold text-slate-800 dark:text-slate-100">
                                 {{ __('Item') }} #{{ groupIndex + 1 }}
@@ -35,19 +35,18 @@
                                 @click.prevent.stop="duplicateGroup(groupIndex)"
                                 title="Duplicar grupo"
                                 class="hover:text-blue-500 transition mr-2">
-                                <i class="fa-solid fa-clone"></i>
+                                <IconComponent name="copy" />
                             </button>
                             <button
                                 class="text-red-800 dark:text-red-400 text-sm hover:text-red-700 dark:hover:text-red-300"
                                 :title="__('Eliminar grupo')"
                                 @click.prevent.stop="removeGroup(groupIndex)">
-                                <i class="fa-solid fa-trash"></i>
+                                <IconComponent name="delete" />
                             </button>
                             <button
                                 title="Expandir/Colapsar"
                                 class="hover:text-slate-600 dark:hover:text-slate-300 transition">
-                                <i
-                                    :class="[ 'fa-solid', !group._collapsed ? 'fa-chevron-down' : 'fa-chevron-up' ]"></i>
+                                <IconComponent :name="! group._collapsed ? 'down' : 'up'" />
                             </button>
                         </div>
                     </div>
@@ -96,6 +95,7 @@
 <script setup>
 
 import { computed } from 'vue'
+import IconComponent from './IconComponent.vue'
 import draggable from 'vuedraggable'
 import TextInputComponent from './TextInputComponent.vue'
 import SelectInputComponent from './SelectInputComponent.vue'

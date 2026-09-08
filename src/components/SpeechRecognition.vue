@@ -8,7 +8,7 @@
 
                 <div class="recording-circle" @click="stopRecognition">
 
-                    <i class="fas fa-pause pause-icon"></i>
+                    <IconComponent name="pause" custom-class="pause-icon" />
 
                 </div>
 
@@ -28,7 +28,7 @@
                 
                 <div class="microphone-container" @click="startRecognition">
 
-                    <i class="fas fa-microphone"></i>
+                    <IconComponent name="record" />
 
                 </div>
 
@@ -43,6 +43,7 @@
 <script setup>
 
     import { onMounted, ref, shallowRef } from 'vue'
+    import IconComponent from '../IconComponent.vue'
 
     const props = defineProps({
 

@@ -51,7 +51,7 @@
                 	class="fe-password-toggle"
                 	:aria-label="showPassword ? 'Hide password' : 'Show password'"
                 	@click="showPassword = !showPassword">
-                	<i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                	<IconComponent :name="showPassword ? 'hide' : 'show'" />
                 </button>
 
             </div>

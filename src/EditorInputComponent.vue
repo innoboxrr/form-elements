@@ -155,7 +155,7 @@
 
 	})
 
-	const emit = defineEmits(['update:modelValue'])
+	const emit = defineEmits(['update:modelValue', 'error'])
 
 	// data() hacia `this.localTinyMceCdn ?? this.tinymceCdn`, pero
 	// localTinyMceCdn no existia como prop ni como dato: siempre undefined.
@@ -172,9 +172,21 @@
 		?? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
 		?? ''
 
+	/**
+	 * Antes esto llamaba a globalThis.UIkit.notification(), que era la ultima
+	 * dependencia real de UIkit que quedaba en el ecosistema — y una que no
+	 * declaraba ningun package.json: si la aplicacion no lo cargaba, el error
+	 * se perdia en silencio.
+	 *
+	 * Ahora se emite. Como cada aplicacion tiene su propia forma de avisar
+	 * —un toast, un banner, Sentry—, el componente dice que ha fallado y deja
+	 * que decida quien lo monta. Y para que no se pierda si nadie escucha,
+	 * queda ademas en la consola.
+	 */
 	const notifyError = (message) => {
-		// UIkit lo aporta la aplicacion anfitriona.
-		globalThis.UIkit?.notification({ message, status: 'danger' })
+		emit('error', message)
+
+		console.error(`[EditorInputComponent] ${message}`)
 	}
 
 	const focusFirstFieldOfDialog = () => {

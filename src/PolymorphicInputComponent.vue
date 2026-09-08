@@ -112,9 +112,11 @@
 				v-if="showSaveButton" 
 				class="fe-w-auto fe-flex fe-justify-center fe-items-center">
 
-				<i 
-					class="far fa-save fa-lg fe-text-success pointer" 
-					@click="saveResponse"></i>
+				<IconComponent
+					name="save"
+					:size="24"
+					custom-class="fe-text-success pointer"
+					@click="saveResponse" />
 
 			</div>
 
@@ -127,6 +129,7 @@
 <script setup>
 
 	import { computed, ref, useId } from 'vue'
+	import IconComponent from './IconComponent.vue'
 
 	import CheckboxInputComponent from './CheckboxInputComponent.vue'
 	import SingleCheckboxInputComponent from './SingleCheckboxInputComponent.vue'

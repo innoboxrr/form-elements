@@ -22,9 +22,11 @@
 
                             <div class="fe-center-abs">
 
-                                <i 
-                                    class="fas fa-trash-alt fa-2x fe-reveal-target" 
-                                    @click="deleteFile(file)"></i>
+                                <IconComponent
+                                    name="delete"
+                                    :size="32"
+                                    custom-class="fe-delete-file fe-reveal-target"
+                                    @click="deleteFile(file)" />
 
                             </div>
 
@@ -97,9 +99,11 @@
 
                             <div class="fe-center-abs">
 
-                                <i 
-                                    class="fas fa-trash-alt fa-2x fe-reveal-target" 
-                                    @click="deleteFile(file)"></i>
+                                <IconComponent
+                                    name="delete"
+                                    :size="32"
+                                    custom-class="fe-delete-file fe-reveal-target"
+                                    @click="deleteFile(file)" />
 
                             </div>
 
@@ -141,6 +145,7 @@
 <script setup>
 
     import { computed, ref, watch } from 'vue'
+    import IconComponent from './IconComponent.vue'
     import { describeFiles } from 'innoboxrr-form-core'
 
     const props = defineProps({
@@ -405,8 +410,9 @@
         cursor: no-drop;
     }
 
-    .fa-trash-alt {
+    .fe-delete-file {
         color: #ff5454;
+        cursor: pointer;
     }
 
     .drop-input {
