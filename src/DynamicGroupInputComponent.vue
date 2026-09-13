@@ -1,8 +1,8 @@
 <template>
     <div>
-        <label 
+        <label
             v-if="label"
-            class="block mb-4 ml-2 text-sm font-medium text-slate-900 dark:text-slate-100">
+            :class="labelClass">
             {{ label }}
         </label>
 
@@ -10,66 +10,74 @@
             v-model="value"
             handle=".drag-handle"
             item-key="__draggable_key"
-            class="space-y-2 rounded-lg"
+            :class="groupClass"
         >
             <template #item="{ element: group, index: groupIndex }">
-                <div 
-                    class="border rounded-lg bg-white dark:bg-slate-800 shadow-sm relative dark:border-slate-600"
+                <div
+                    :class="cardClass"
                     :key="groupIndex"
                 >
                     <!-- ENCABEZADO -->
-                    <div 
-                        class="flex justify-between items-center px-4 py-3 border-b bg-slate-50 dark:bg-slate-700 dark:border-slate-600 cursor-pointer rounded-t-lg border-b-slate-200 dark:border-b-slate-600"
+                    <div
+                        :class="toolbarClass"
                         @click.prevent="group._collapsed = !group._collapsed"
                     >
-                        <div class="flex items-center gap-2">
-                            <div class="cursor-move drag-handle text-slate-400">
-                                <IconComponent name="drag" />
-                            </div>
-                            <h4 class="text-md font-semibold text-slate-800 dark:text-slate-100">
-                                {{ __('Item') }} #{{ groupIndex + 1 }}
-                            </h4>
-                        </div>
-                        <div class="flex items-center space-x-4 text-slate-400">
-                            <button
-                                @click.prevent.stop="duplicateGroup(groupIndex)"
-                                title="Duplicar grupo"
-                                class="hover:text-blue-500 transition mr-2">
-                                <IconComponent name="copy" />
-                            </button>
-                            <button
-                                class="text-red-800 dark:text-red-400 text-sm hover:text-red-700 dark:hover:text-red-300"
-                                :title="__('Eliminar grupo')"
-                                @click.prevent.stop="removeGroup(groupIndex)">
-                                <IconComponent name="delete" />
-                            </button>
-                            <button
-                                title="Expandir/Colapsar"
-                                class="hover:text-slate-600 dark:hover:text-slate-300 transition">
-                                <IconComponent :name="! group._collapsed ? 'down' : 'up'" />
-                            </button>
-                        </div>
+                        <button
+                            type="button"
+                            :class="[iconButtonClass, dragHandleClass, 'drag-handle']"
+                            :aria-label="`Mover grupo ${groupIndex + 1}`"
+                            @click.prevent.stop>
+                            <IconComponent name="drag" />
+                        </button>
+                        <h4 :class="groupTitleClass">
+                            {{ __('Item') }} #{{ groupIndex + 1 }}
+                        </h4>
+                        <span :class="spacerClass" />
+                        <button
+                            type="button"
+                            :class="iconButtonClass"
+                            title="Duplicar grupo"
+                            aria-label="Duplicar grupo"
+                            @click.prevent.stop="duplicateGroup(groupIndex)">
+                            <IconComponent name="copy" />
+                        </button>
+                        <button
+                            type="button"
+                            :class="[iconButtonClass, iconButtonDangerClass]"
+                            :title="__('Eliminar grupo')"
+                            :aria-label="__('Eliminar grupo')"
+                            @click.prevent.stop="removeGroup(groupIndex)">
+                            <IconComponent name="delete" />
+                        </button>
+                        <button
+                            type="button"
+                            :class="iconButtonClass"
+                            title="Expandir/Colapsar"
+                            aria-label="Expandir/Colapsar"
+                            :aria-expanded="! group._collapsed ? 'true' : 'false'">
+                            <IconComponent :name="! group._collapsed ? 'down' : 'up'" />
+                        </button>
                     </div>
 
                     <!-- CUERPO -->
-                    <div 
+                    <div
                         v-show="!group._collapsed"
-                        class="px-6 py-4 bg-white dark:bg-slate-800"
+                        class="fe-card-body"
                     >
-                        <div 
-                            v-for="(field, fieldIndex) in inputsConfig" 
+                        <div
+                            v-for="(field, fieldIndex) in inputsConfig"
                             :key="fieldIndex"
                         >
-                            <component 
+                            <component
                                 :is="resolveComponent(field.type)"
                                 v-model="group[field.key]"
                                 v-bind="getFieldAttributes(field, groupIndex, fieldIndex)"
                                 @paste="handlePaste($event, groupIndex, field)"
                             >
                                 <template v-slot>
-                                    <option 
-                                        v-for="option in field.options" 
-                                        :key="option.value" 
+                                    <option
+                                        v-for="option in field.options"
+                                        :key="option.value"
                                         :value="option.value"
                                         :disabled="option.disabled">
                                         {{ option.text }}
@@ -83,9 +91,10 @@
         </draggable>
 
         <!-- BOTÓN PARA AÑADIR -->
-        <button 
-            @click.prevent="addGroup" 
-            class="mt-6 inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <button
+            type="button"
+            :class="[buttonClass, 'fe-mt']"
+            @click.prevent="addGroup">
             {{ addButtonLabel || __('Add') }}
         </button>
     </div>
@@ -101,6 +110,7 @@ import TextInputComponent from './TextInputComponent.vue'
 import SelectInputComponent from './SelectInputComponent.vue'
 import TextareaInputComponent from './TextareaInputComponent.vue'
 import EditorInputComponent from './EditorInputComponent.vue'
+import { useThemeClass } from './composables/useTheme.js'
 
 const props = defineProps({
     modelValue: {
@@ -130,6 +140,20 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+// El aspecto sale del tema, con el mismo marcado que la rama React: cada grupo
+// es una superficie con su barra. Antes eran clases de Tailwind y colores
+// escritos para el modo oscuro que el paquete no declara.
+const labelClass = useThemeClass('label')
+const groupClass = useThemeClass('group')
+const cardClass = useThemeClass('surface')
+const toolbarClass = useThemeClass('toolbar')
+const spacerClass = useThemeClass('toolbarSpacer')
+const groupTitleClass = useThemeClass('groupTitle')
+const iconButtonClass = useThemeClass('iconButton')
+const iconButtonDangerClass = useThemeClass('iconButtonDanger')
+const dragHandleClass = useThemeClass('dragHandle')
+const buttonClass = useThemeClass('button')
 
 const value = computed({
     get: () => props.modelValue,

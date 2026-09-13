@@ -5,17 +5,17 @@
 -->
 
 <template>
-    
+
     <div class="pointer drop-input">
 
-        <div v-if="showTopPreview"> 
+        <div v-if="showTopPreview">
 
-            <div class="fe-flex fe-justify-center preview" fe-grid>
-                
+            <div class="fe-flex fe-justify-center fe-grid preview">
+
                 <div :class="previewGridClass" v-for="file in fileList" :key="file.name">
 
                     <div class="fe-relative fe-text-center">
-                        
+
                         <div class="fe-inline-clip fe-reveal" tabindex="0">
 
                             <img class="preview-img" :data-src="file.preview" width="180" height="180" >
@@ -39,35 +39,35 @@
             </div>
 
         </div>
-        
-        <label v-if="!currentOnUpload && !maxFilesReached"> 
 
-            <div 
+        <label v-if="!currentOnUpload && !maxFilesReached">
+
+            <div
                 :class="`${dropzoneClass} ${onDropClass}`"
                 @dragover.prevent="handleDragOver"
                 @drop.prevent="handleDrop"
-                @dragleave.prevent="handleDragLeave">    
+                @dragleave.prevent="handleDragLeave">
 
-                    <p v-if="!onDrop" class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ message }}</p>
+                    <p v-if="!onDrop" :class="classFor('label')">{{ message }}</p>
 
-                    <p v-else class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ onDropMessage }}</p>
+                    <p v-else :class="classFor('label')">{{ onDropMessage }}</p>
 
                     <slot v-if="!onDrop" name="normalSlot"></slot>
 
                     <slot v-else name="onDropSlot"></slot>
-                    
-                    <input 
-                        class="file-input" 
-                        type="file" 
-                        :name="name" 
-                        :multiple="multiple" 
+
+                    <input
+                        class="file-input"
+                        type="file"
+                        :name="name"
+                        :multiple="multiple"
                         @change="handleFileChange($event)" />
 
             </div>
 
         </label>
 
-        <div v-else-if="currentOnUpload" :class="`${dropzoneClass} ${onDropClass} dropzone-disable dark:text-white`">
+        <div v-else-if="currentOnUpload" :class="`${dropzoneClass} ${onDropClass} dropzone-disable`">
 
             {{ onUploadMessage }}
 
@@ -76,23 +76,23 @@
         </div>
 
         <div v-else-if="maxFilesReached">
-            
-            <div v-if="!hideOnMaxFilesReached" :class="`${dropzoneClass} ${onDropClass} dropzone-disable ml-2 text-sm font-medium text-gray-900 dark:text-white`">
-                
+
+            <div v-if="!hideOnMaxFilesReached" :class="`${dropzoneClass} ${onDropClass} dropzone-disable ${classFor('label')}`">
+
                 Máximo número de archivos alcanzados
 
             </div>
 
         </div>
 
-        <div v-if="showBottomPreview"> 
+        <div v-if="showBottomPreview">
 
-            <div class="fe-flex fe-justify-center preview" fe-grid>
-                
+            <div class="fe-flex fe-justify-center fe-grid preview">
+
                 <div :class="previewGridClass" v-for="file in fileList" :key="file.name">
 
                     <div class="fe-relative fe-text-center">
-                        
+
                         <div class="fe-inline-clip fe-reveal" tabindex="0">
 
                             <img class="preview-img" :data-src="file.preview" width="180" height="180" >
@@ -118,12 +118,12 @@
         </div>
 
         <div v-if="errors.length > 0">
-            
-            <p class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'Validation errors' }}: </p>
+
+            <p :class="classFor('error')">{{ 'Validation errors' }}: </p>
 
             <ul>
-                
-                <li 
+
+                <li
                     v-for="error in errors"
                     :key="error.name"
                     class="error-msg">File: {{ error.name }} {{ 'has has the following errors: ' }}
@@ -146,7 +146,7 @@
 
     import { computed, ref, watch } from 'vue'
     import IconComponent from './IconComponent.vue'
-    import { describeFiles } from 'innoboxrr-form-core'
+    import { classFor, describeFiles } from 'innoboxrr-form-core'
 
     const props = defineProps({
         uploadUrl: {
@@ -401,7 +401,7 @@
     .pointer {
         cursor: pointer;
     }
-    
+
     .file-input {
         display: none;
     }
@@ -410,27 +410,31 @@
         cursor: no-drop;
     }
 
+    /* Los colores salen de las variables del tema, que el modo oscuro
+       redefine; antes eran valores fijos que en oscuro no se leían. */
     .fe-delete-file {
-        color: #ff5454;
+        color: var(--fe-danger);
         cursor: pointer;
     }
 
     .drop-input {
-        border: dotted lightskyblue;
+        border: 1px dashed var(--fe-border-strong);
+        border-radius: var(--fe-radius-lg);
         padding: 20px;
-        background: #87ceeb30;
+        background: var(--fe-surface-sunk);
     }
 
     .drop-zone {
         padding: 20px;
-        background: #87ceeb30;
+        background: var(--fe-surface);
+        border-radius: var(--fe-radius);
         text-align: center;
         margin-top: 15px;
         margin-bottom: 15px;
     }
 
     .drop-zone.ondrop {
-        background: #87ceeb66;
+        background: var(--fe-primary-soft);
     }
 
 </style>

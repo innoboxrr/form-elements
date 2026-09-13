@@ -1,16 +1,20 @@
 <template>
   <div class="avatar-container">
-      <img 
-	  	:src="avatarUrl" 
-		@click="triggerFileInput"
-		alt="Avatar" 
-		class="w-24 h-24 rounded-full object-cover border-2 border-gray-300 hover:border-blue-500 shadow-md hover:shadow-lg transition duration-300 ease-in-out cursor-pointer avatar" />
-      <input 
-          type="file" 
-          accept="image/*" 
-          ref="fileInput" 
+      <img
+          :src="avatarUrl"
+          :class="avatarClass"
+          alt="Avatar"
+          role="button"
+          tabindex="0"
+          @click="triggerFileInput"
+          @keydown.enter.prevent="triggerFileInput"
+          @keydown.space.prevent="triggerFileInput" />
+      <input
+          type="file"
+          accept="image/*"
+          ref="fileInput"
           @change="uploadAvatar"
-          style="display: none"  
+          style="display: none"
       />
   </div>
 </template>
@@ -18,6 +22,7 @@
 <script setup>
 
 import { ref } from 'vue'
+import { useThemeClass } from './composables/useTheme.js'
 
 const props = defineProps({
     avatarUrl: { type: String, required: true },
@@ -26,6 +31,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['upload'])
+
+// El tamaño, el borde y el foco salen del tema, igual que en la rama React.
+const avatarClass = useThemeClass('avatarPreview')
 
 const fileInput = ref(null)
 
@@ -67,12 +75,5 @@ const uploadAvatar = async () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .avatar {
-    width: 100px; /* Ajusta el tamaño según tus necesidades */
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
   }
 </style>

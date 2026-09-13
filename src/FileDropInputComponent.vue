@@ -1,27 +1,29 @@
 <template>
-    
-    <div 
+
+    <div
+        :class="dropClass"
+        :data-dragging="dragging ? 'true' : 'false'"
+        role="button"
+        tabindex="0"
         @click="openFileDialog"
-        @drop.prevent="handleDrop" 
-        @dragover.prevent 
-        class="mb-2 flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-slate-50 dark:hover:border-slate-400 dark:hover:bg-slate-500 pointer">
-        
-        <IconComponent name="media" :size="32" custom-class="text-slate-500 my-3 dark:text-slate-200" />
-        
-        <p class="text-slate-400 text-sm pt-2 dark:text-slate-200 pointer">
-            {{ mainText }}
-        </p>
-        
-        <p class="text-slate-400 text-xs pt-2 dark:text-slate-200 pointer">
-            {{ subText }}
-        </p>
-        
-        <input 
-            type="file" 
-            ref="fileInput" 
-            class="hidden" 
-            @change="handleFileChange" 
-            :multiple="multiple">
+        @keydown.enter.prevent="openFileDialog"
+        @keydown.space.prevent="openFileDialog"
+        @dragover.prevent="dragging = true"
+        @dragleave="dragging = false"
+        @drop.prevent="handleDrop">
+
+        <IconComponent name="media" :size="32" />
+
+        <p>{{ mainText }}</p>
+
+        <p :class="hintClass">{{ subText }}</p>
+
+        <input
+            ref="fileInput"
+            type="file"
+            hidden
+            :multiple="multiple"
+            @change="handleFileChange">
 
     </div>
 
@@ -29,8 +31,16 @@
 
 <script setup>
 
+    /**
+     * La zona para soltar archivos, con el marcado de su gemela React: se
+     * resalta mientras se arrastra algo encima y se abre también con el
+     * teclado. Antes la dibujaban clases de Tailwind que el paquete no
+     * declara.
+     */
+
     import { ref } from 'vue'
     import IconComponent from './IconComponent.vue'
+    import { useThemeClass } from './composables/useTheme.js'
 
     defineProps({
         multiple: { type: Boolean, default: false },
@@ -40,11 +50,19 @@
 
     const emit = defineEmits(['change'])
 
+    const dropClass = useThemeClass('fileDrop')
+    const hintClass = useThemeClass('fileDropHint')
+
     const fileInput = ref(null)
+    const dragging = ref(false)
 
     const openFileDialog = () => fileInput.value?.click()
 
-    const handleDrop = (event) => emit('change', Array.from(event.dataTransfer.files))
+    const handleDrop = (event) => {
+        dragging.value = false
+
+        emit('change', Array.from(event.dataTransfer.files))
+    }
 
     const handleFileChange = (event) => emit('change', Array.from(event.target.files))
 

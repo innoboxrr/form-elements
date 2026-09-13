@@ -1,16 +1,16 @@
 <template>
-    
+
     <div
         :class="{ 'code-input-container': true, [className]: !!className, }">
 
-        <div class="code-input">
-            
+        <div :class="['code-input', codeInputClass]">
+
             <p class="title" v-if="title">{{ title }}</p>
-            
+
             <template v-for="(v, index) in values" :key="index">
-            
-                <input 
-                    class="w-14 h-14 rounded-lg border border-gray outline-none focus:outline-none focus:border-primary focus:ring-0 text-center transition-all"
+
+                <input
+                    :class="codeCellClass"
                     type="number"
                     pattern="[0-9]"
                     :style="{
@@ -43,35 +43,36 @@
 <script setup>
 
     // Referencia: https://github.com/zlayine/vue3-verification-code-input/blob/master/src/components/CodeInput.vue
-    
+
     // defineProps y defineEmits son macros del compilador: importarlas emite
     // un aviso en cada build.
     import { ref, toRef, onBeforeUpdate } from "vue";
-    
+    import { useThemeClass } from "./composables/useTheme.js";
+
     const props = defineProps({
 
         className: String,
-        
+
         fields: {
             type: Number,
             default: 3,
         },
-        
+
         fieldWidth: {
             type: Number,
             default: 56,
         },
-        
+
         fieldHeight: {
             type: Number,
             default: 56,
         },
-        
+
         disabled: {
             type: Boolean,
             default: false,
         },
-        
+
         required: {
             type: Boolean,
             default: true,
@@ -82,6 +83,11 @@
     });
 
     const emit = defineEmits(["change", "complete"]);
+
+    // Las casillas se dibujaban con Tailwind y con colores escritos en el
+    // estilo del componente; ahora salen del tema, como en la rama React.
+    const codeInputClass = useThemeClass("codeInput");
+    const codeCellClass = useThemeClass("codeCell");
 
     const KEY_CODE = {
         backspace: 8,
@@ -95,25 +101,25 @@
     const values = ref([]);
 
     const iRefs = ref([]);
-    
+
     const inputs = ref([]);
-    
+
     const fields = toRef(props, "fields");
-    
+
     const autoFocusIndex = ref(0);
-    
+
     const autoFocus = true;
-    
+
     const initVals = () => {
-    
+
         let vals;
-    
+
         if (values.value && values.value.length) {
 
             vals = [];
-            
+
             for (let i = 0; i < fields.value; i++) {
-            
+
                 vals.push(values.value[i] || "");
 
             }
@@ -127,9 +133,9 @@
         }
 
         iRefs.value = [];
-        
+
         for (let i = 0; i < fields.value; i++) {
-            
+
             iRefs.value.push(i + 1);
 
         }
@@ -139,57 +145,57 @@
     };
 
     const onFocus = (e) => {
-    
+
         e.target.select(e);
-    
+
     };
 
     const onValueChange = (e) => {
 
         const index = parseInt(e.target.dataset.id);
-    
+
         e.target.value = e.target.value.replace(/[^\d]/gi, "");
-    
+
         // this.handleKeys[index] = false;
-    
+
         if (e.target.value === "" || !e.target.validity.valid) {
-        
+
             return;
 
         }
 
         let next;
-        
+
         const value = e.target.value;
-        
+
         values.value = Object.assign([], values.value);
-        
+
         if (value.length > 1) {
-    
+
             let nextIndex = value.length + index - 1;
-    
+
             if (nextIndex >= fields.value) {
-        
+
                 nextIndex = fields.value - 1;
-        
+
             }
-        
+
             next = iRefs.value[nextIndex];
-        
+
             const split = value.split("");
-        
+
             split.forEach((item, i) => {
-        
+
                 const cursor = index + i;
-            
+
                 if (cursor < fields.value) {
-            
+
                     values.value[cursor] = item;
-            
+
                 }
-        
+
             });
-        
+
         } else {
 
         next = iRefs.value[index + 1];
@@ -199,11 +205,11 @@
         }
 
         if (next) {
-            
+
             const element = inputs.value[next];
-            
+
             element.focus();
-            
+
             element.select();
 
         }
@@ -213,135 +219,135 @@
     };
 
     const onKeyDown = (e) => {
-        
+
         const index = parseInt(e.target.dataset.id);
-        
+
         const prevIndex = index - 1;
-        
+
         const nextIndex = index + 1;
-        
+
         const prev = iRefs.value[prevIndex];
-        
+
         const next = iRefs.value[nextIndex];
-        
+
         switch (e.keyCode) {
-        
+
             case KEY_CODE.backspace: {
 
                 e.preventDefault();
-                
+
                 const vals = [...values.value];
-                
+
                 if (values.value[index]) {
-                
+
                     vals[index] = "";
-                    
+
                     values.value = vals;
-                    
+
                     triggerChange(vals);
-                
+
                 } else if (prev) {
-                
+
                     vals[prevIndex] = "";
-                    
+
                     inputs.value[prev].focus();
-                    
-                    values.value = vals;
-                    
-                    triggerChange(vals);
-                
-                }
-                
-                break;
 
-            }    
-            
-            case KEY_CODE.delete: {
+                    values.value = vals;
 
-                e.preventDefault();
-                
-                const vals = [...values.value];
-                
-                if (values.value[index]) {
-                
-                    vals[index] = "";
-                    
-                    values.value = vals;
-                    
                     triggerChange(vals);
-                
-                } else if (next) {
-                
-                    vals[nextIndex] = "";
-                    
-                    inputs.value[next].focus();
-                    
-                    values.value = vals;
-                    
-                    triggerChange(vals);
-                
+
                 }
-                
+
                 break;
 
             }
-            
+
+            case KEY_CODE.delete: {
+
+                e.preventDefault();
+
+                const vals = [...values.value];
+
+                if (values.value[index]) {
+
+                    vals[index] = "";
+
+                    values.value = vals;
+
+                    triggerChange(vals);
+
+                } else if (next) {
+
+                    vals[nextIndex] = "";
+
+                    inputs.value[next].focus();
+
+                    values.value = vals;
+
+                    triggerChange(vals);
+
+                }
+
+                break;
+
+            }
+
             case KEY_CODE.left:
-            
+
                 e.preventDefault();
-                
+
                 if (prev) {
-                
+
                 inputs.value[prev].focus();
-                
+
                 }
-            
+
             break;
-            
+
             case KEY_CODE.right:
-            
+
                 e.preventDefault();
-                
+
                 if (next) {
-                
+
                 inputs.value[next].focus();
-                
+
                 }
-            
+
             break;
-            
+
             case KEY_CODE.up:
-            
+
             case KEY_CODE.down:
-            
+
                 e.preventDefault();
-            
+
             break;
-            
+
             default:
-            
+
                 // this.handleKeys[index] = true;
 
             break;
-        
+
         }
 
     };
 
     const triggerChange = (values = values.value) => {
-    
+
         const val = values.join("");
-        
+
         emit("change", val);
-        
+
         emit("complete", val.length >= fields.value);
-    
+
     };
 
     initVals();
 
     onBeforeUpdate(() => {
-        
+
         inputs.value = [];
 
     });
@@ -366,39 +372,10 @@
         gap: 10px;
     }
 
-    .code-input > input {
-        border: solid 1px #a8adb7;
-        font-family: "Lato";
-        font-size: 20px;
-        border-radius: 8px;
-        text-align: center;
-        transition: 0.2s all ease-in-out;
-        color: #525461;
-        box-sizing: border-box;
-        -webkit-appearance: initial;
-    }
-
-    .code-input > input:focus {
-        outline: none;
-        border: 1px solid #006fff;
-        caret-color: #006fff;
-    }
-
     .title {
         margin: 0;
         height: 20px;
         padding-bottom: 10px;
-    }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        /* display: none; <- Crashes Chrome on hover */
-        -webkit-appearance: none;
-        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-    }
-
-    input[type=number] {
-        -moz-appearance:textfield; /* Firefox */
     }
 
 </style>

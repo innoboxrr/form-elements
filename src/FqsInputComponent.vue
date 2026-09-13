@@ -1,13 +1,13 @@
 <!-- FqsInputComponent.vue -->
 <template>
     <div>
-        <label class="block mb-4 ml-2 text-sm font-medium text-gray-900 dark:text-white">
+        <h4 class="fe-group-title fe-mb-sm">
             {{ labels.title }}
-        </label>
+        </h4>
         <div
             v-for="(fq, index) in modelValue"
             :key="index"
-            class="mb-4 relative">
+            class="fe-card fe-card-sm fe-card-body fe-mb">
             <TextInputComponent
                 :custom-class="inputClass"
                 type="text"
@@ -35,14 +35,16 @@
             />
             <button
                 v-if="modelValue.length - 1 === index"
-                @click.prevent="removeFq(index)"
-                class="absolute -bottom-12 right-0 inline-flex items-center gap-x-1.5 rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                type="button"
+                class="fe-button-danger fe-button-sm"
+                @click.prevent="removeFq(index)">
                 {{ labels.remove }}
             </button>
         </div>
         <button
-            @click.prevent="addFq"
-            class="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            type="button"
+            class="fe-button"
+            @click.prevent="addFq">
             {{ labels.add }}
         </button>
     </div>
