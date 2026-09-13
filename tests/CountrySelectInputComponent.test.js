@@ -1,0 +1,75 @@
+import { afterEach, describe, expect, it } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
+
+const { default: CountrySelectInputComponent } = await import('../src/CountrySelectInputComponent.vue')
+
+const mounted = []
+
+afterEach(() => {
+    mounted.splice(0).forEach((wrapper) => wrapper.unmount())
+})
+
+const mountPhone = async (props = {}) => {
+    const wrapper = mount(CountrySelectInputComponent, {
+        props: { label: 'Teléfono', defaultCountry: 'MX', ...props },
+        attachTo: document.body,
+    })
+
+    mounted.push(wrapper)
+
+    await flushPromises()
+
+    return wrapper
+}
+
+describe('CountrySelectInputComponent', () => {
+    /**
+     * La etiqueta y el campo llevaban clases de Tailwind y colores escritos:
+     * fuera de una aplicación con Tailwind salían sin forma.
+     */
+    it('se pinta con el tema', async () => {
+        const wrapper = await mountPhone()
+
+        expect(wrapper.find('label').classes()).toContain('fe-label')
+        expect(wrapper.find('.vue-tel-input').classes()).toContain('fe-phone')
+        expect(wrapper.find('input[type="tel"]').classes()).not.toContain('bg-gray-50')
+    })
+
+    it('la etiqueta apunta al campo', async () => {
+        const wrapper = await mountPhone()
+
+        expect(wrapper.find('label').attributes('for')).toBe(wrapper.find('input[type="tel"]').attributes('id'))
+    })
+
+    it('marca el error con un numero incompleto', async () => {
+        const wrapper = await mountPhone()
+
+        await wrapper.find('input[type="tel"]').setValue('55')
+
+        expect(wrapper.find('.vue-tel-input').classes()).toContain('fe-phone-invalid')
+    })
+
+    /**
+     * Hay formularios que guardan `phone` y `country.dialCode` tal cual: lo
+     * que emite no puede cambiar por arreglar el aspecto.
+     */
+    it('emite lo mismo que antes', async () => {
+        const wrapper = await mountPhone()
+
+        await wrapper.find('input[type="tel"]').setValue('5512345678')
+        await flushPromises()
+
+        const last = wrapper.emitted('change').at(-1)[0]
+
+        expect(last.isValid).toBe(true)
+        expect(last.phone).toBe('5512345678')
+        expect(last.country).toEqual(expect.objectContaining({ iso2: 'MX', dialCode: '52' }))
+    })
+
+    it('dos telefonos no comparten id', async () => {
+        const first = await mountPhone()
+        const second = await mountPhone({ label: 'WhatsApp' })
+
+        expect(first.find('input[type="tel"]').attributes('id')).not.toBe(second.find('input[type="tel"]').attributes('id'))
+    })
+})
