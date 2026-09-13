@@ -1,7 +1,7 @@
 {
   "name": "innoboxrr-form-elements",
   "version": "6.3.0",
-  "description": "",
+  "description": "Componentes Vue de la interfaz innoboxrr: formularios, diálogos, drawers, menús, avisos y paleta de comandos, sobre el tema de innoboxrr-form-core.",
   "main": "index.js",
   "scripts": {
     "test": "vitest run",
@@ -32,11 +32,12 @@
     "@codemirror/lang-javascript": "^6.0.2",
     "@codemirror/lang-json": "^6.0.0",
     "@codemirror/theme-one-dark": "^6.1.0",
+    "@floating-ui/dom": "^1.8.0",
     "@iconify/vue": "^5.0.0",
     "@tinymce/tinymce-vue": "^5.0.0",
     "@yaireo/tagify": "^4.27.0",
     "codemirror": "^6.0.1",
-    "innoboxrr-form-core": "^2.3.0",
+    "innoboxrr-form-core": "^2.5.0",
     "innoboxrr-maskjs": "^2.0.0",
     "vue-codemirror": "^6.1.1",
     "vue-select": "^4.0.0-beta.3",
