@@ -4,7 +4,7 @@
 
         <div class="fe-inline fe-w-full">
 
-        	<label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">{{ label }}</label>
+        	<label :class="labelClass">{{ label }}</label>
 
             <textarea
             	:class="areaClass"
@@ -75,6 +75,8 @@
 	const emit = defineEmits(['update:modelValue'])
 
 	const areaClass = useThemeClass('textarea', () => props.customClass)
+
+	const labelClass = useThemeClass('label')
 
 	const value = computed({
 		get: () => props.modelValue,

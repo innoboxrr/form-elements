@@ -1,7 +1,7 @@
 <template>
 
 	<div class="fe-mb">
-        <label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
+        <label :class="labelClass">
             <input
                 :class="radioClass"
                 type="radio"
@@ -73,6 +73,8 @@
 	const emit = defineEmits(['update:modelValue'])
 
 	const radioClass = useThemeClass('radio', () => props.customClass)
+
+	const labelClass = useThemeClass('label')
 
 	// El getter devolvia la propia computed en lugar de modelValue, asi que el
 	// radio nunca aparecia seleccionado a partir del valor enlazado.

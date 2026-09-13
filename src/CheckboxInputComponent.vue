@@ -2,7 +2,7 @@
 
 	<div class="fe-mb">
 
-        <label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
+        <label :class="labelClass">
 
             <input
                 :class="boxClass"
@@ -60,6 +60,8 @@
 	const emit = defineEmits(['update:modelValue'])
 
 	const boxClass = useThemeClass('checkbox', () => props.customClass)
+
+	const labelClass = useThemeClass('label')
 
 	/**
 	 * El getter devolvia `this.value`, es decir la propia computed: Vue corta

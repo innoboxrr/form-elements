@@ -2,7 +2,7 @@
 
     <div class="fe-mb">
 
-        <label :for="id + '_' + label" class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
+        <label :for="id + '_' + label" :class="labelClass">
 
         <input
             :id="id + '_' + label"
@@ -22,6 +22,8 @@
 </template>
 
 <script setup>
+
+    import { useThemeClass } from './composables/useTheme.js'
 
     defineProps({
 
@@ -48,7 +50,6 @@
 
     const emit = defineEmits(['update:checked'])
 
-</script>
+    const labelClass = useThemeClass('label')
 
-<style>
-</style>
+</script>

@@ -1,8 +1,8 @@
 <template>
     <div class="fe-mb">
         <div class="fe-inline fe-w-full">
-            <label class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
-                <span v-if="help" class="cursor-pointer">
+            <label :class="classFor('label')">
+                <span v-if="help" :class="classFor('help')">
                     <i
 						:class="classFor('helpIcon')"
 						:data-tooltip="help"
