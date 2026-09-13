@@ -27,11 +27,17 @@
 	 * `country` tal como lo da vue-tel-input (`dialCode`, `name`, `iso2`). Hay
 	 * formularios que guardan exactamente eso.
 	 *
+	 * La validez la decide libphonenumber según el país elegido, igual que en
+	 * React. Antes valía cualquier número de 10 dígitos: un móvil español (9)
+	 * no se podía guardar y un número mexicano imposible sí. `phone` sigue
+	 * siendo el número nacional en dígitos, sin prefijo.
+	 *
 	 * El aspecto sale del tema (`phone`, `phoneInvalid`). Antes el campo llevaba
 	 * clases de Tailwind y colores escritos en su estilo, así que fuera de una
 	 * aplicación con Tailwind salía sin forma y en oscuro no se leía.
 	 */
 	import { computed, ref, useId, watch } from 'vue'
+	import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js'
 	import { VueTelInput } from 'vue-tel-input'
 	import 'vue-tel-input/dist/vue-tel-input.css'
 	import { useThemeClass } from './composables/useTheme.js'
@@ -87,7 +93,8 @@
 		autocomplete: 'on',
 		autofocus: false,
 		aria: '',
-		maxlength: 12,
+		// Con 12 no cabía un número formateado de países con más dígitos.
+		maxlength: 20,
 		name: 'telephone',
 		showDialCode: false,
 		placeholder: 'Ingresa un número telefónico',
@@ -105,11 +112,26 @@
 	// defaultPhone admite Number, y entonces .replace() reventaba.
 	const extractDigits = (value) => String(value ?? '').replace(/\D/g, '')
 
-	const validatePhone = (value) => extractDigits(value).length === 10
+	// vue-tel-input da el país como objeto; defaultCountry puede ser el iso2.
+	const iso2Of = (value) => String((typeof value === 'object' ? value?.iso2 : value) ?? '').toUpperCase() || undefined
+
+	const nationalNumber = (value) => {
+		const iso2 = iso2Of(country.value)
+
+		try {
+			return isValidPhoneNumber(String(value ?? ''), iso2)
+				? parsePhoneNumber(String(value), iso2).nationalNumber
+				: null
+		} catch {
+			return null
+		}
+	}
 
 	const emitValue = () => {
 
-		if (! validatePhone(phone.value)) {
+		const national = nationalNumber(phone.value)
+
+		if (national === null) {
 			isValid.value = false
 			return
 		}
@@ -117,7 +139,7 @@
 		isValid.value = true
 
 		emit('change', {
-			phone: extractDigits(phone.value),
+			phone: national,
 			country: country.value,
 			isValid: true,
 		})

@@ -68,6 +68,41 @@ describe('CountrySelectInputComponent', () => {
     })
 
     /**
+     * Antes valía cualquier número de 10 dígitos: un móvil español no se
+     * podía guardar y un número mexicano imposible sí.
+     */
+    it('valida segun el pais elegido', async () => {
+        const spain = await mountPhone({ defaultCountry: 'ES' })
+
+        await spain.find('input[type="tel"]').setValue('612345678')
+        await flushPromises()
+
+        const last = spain.emitted('change').at(-1)[0]
+
+        expect(last).toEqual({ phone: '612345678', country: expect.objectContaining({ iso2: 'ES', dialCode: '34' }), isValid: true })
+
+        const mexico = await mountPhone()
+
+        await mexico.find('input[type="tel"]').setValue('1234567890')
+        await flushPromises()
+
+        expect(mexico.find('.vue-tel-input').classes()).toContain('fe-phone-invalid')
+        expect((mexico.emitted('change') ?? []).some(([payload]) => payload.isValid)).toBe(false)
+    })
+
+    it('emite el numero nacional aunque se escriba con prefijo', async () => {
+        const wrapper = await mountPhone()
+
+        await wrapper.find('input[type="tel"]').setValue('+52 55 1234 5678')
+        await flushPromises()
+
+        const last = wrapper.emitted('change').at(-1)[0]
+
+        expect(last.isValid).toBe(true)
+        expect(last.phone).toBe('5512345678')
+    })
+
+    /**
      * En la misma aplicación, como en una página real: useId() numera por
      * aplicación, así que dos montajes sueltos pueden repetir id sin que eso
      * pase nunca en un formulario.

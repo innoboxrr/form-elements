@@ -39,6 +39,7 @@
     "codemirror": "^6.0.1",
     "innoboxrr-form-core": "^2.8.0",
     "innoboxrr-maskjs": "^2.0.0",
+    "libphonenumber-js": "^1.12.0",
     "vue-codemirror": "^6.1.1",
     "vue-select": "^4.0.0-beta.3",
     "vue-tel-input": "^6.0.5",
