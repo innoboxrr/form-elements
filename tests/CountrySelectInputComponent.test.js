@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
+import { h } from 'vue'
 
 const { default: CountrySelectInputComponent } = await import('../src/CountrySelectInputComponent.vue')
 
@@ -66,10 +67,26 @@ describe('CountrySelectInputComponent', () => {
         expect(last.country).toEqual(expect.objectContaining({ iso2: 'MX', dialCode: '52' }))
     })
 
+    /**
+     * En la misma aplicación, como en una página real: useId() numera por
+     * aplicación, así que dos montajes sueltos pueden repetir id sin que eso
+     * pase nunca en un formulario.
+     */
     it('dos telefonos no comparten id', async () => {
-        const first = await mountPhone()
-        const second = await mountPhone({ label: 'WhatsApp' })
+        const wrapper = mount({
+            render: () => h('div', [
+                h(CountrySelectInputComponent, { label: 'Teléfono' }),
+                h(CountrySelectInputComponent, { label: 'WhatsApp' }),
+            ]),
+        }, { attachTo: document.body })
 
-        expect(first.find('input[type="tel"]').attributes('id')).not.toBe(second.find('input[type="tel"]').attributes('id'))
+        mounted.push(wrapper)
+
+        await flushPromises()
+
+        const ids = wrapper.findAll('input[type="tel"]').map((input) => input.attributes('id'))
+
+        expect(ids).toHaveLength(2)
+        expect(ids[0]).not.toBe(ids[1])
     })
 })
