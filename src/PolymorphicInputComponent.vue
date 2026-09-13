@@ -68,7 +68,7 @@
 			            :label="props.label" 
 			            :validators="props.validators" 
 			            v-model="value">
-			            <option value="" selected disabled>Selecciona una opción</option>        
+			            <option value="" selected disabled>{{ props.placeholder || 'Selecciona una opción' }}</option>
 			            <option 
 			            	v-for="option in props.options"
 			            	:key="option"

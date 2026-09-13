@@ -79,7 +79,7 @@
 
             <div v-if="!hideOnMaxFilesReached" :class="`${dropzoneClass} ${onDropClass} dropzone-disable ${classFor('label')}`">
 
-                Máximo número de archivos alcanzados
+                {{ maxFilesMessage }}
 
             </div>
 
@@ -119,14 +119,14 @@
 
         <div v-if="errors.length > 0">
 
-            <p :class="classFor('error')">{{ 'Validation errors' }}: </p>
+            <p :class="classFor('error')">{{ errorsTitle }}: </p>
 
             <ul>
 
                 <li
                     v-for="error in errors"
                     :key="error.name"
-                    class="error-msg">File: {{ error.name }} {{ 'has has the following errors: ' }}
+                    class="error-msg">{{ error.name }}:
                     <ul>
                         <li v-for="err in error.errors">
                             {{ err }}
@@ -234,6 +234,16 @@
         onUploadMessage: {
             type: String,
             default: 'Files are being uploaded'
+        },
+        // Estos dos textos estaban escritos en la plantilla, uno en español y
+        // otro en inglés, y no había forma de traducirlos.
+        maxFilesMessage: {
+            type: String,
+            default: 'Máximo número de archivos alcanzados'
+        },
+        errorsTitle: {
+            type: String,
+            default: 'Validation errors'
         },
         hideOnMaxFilesReached: {
             type: Boolean,

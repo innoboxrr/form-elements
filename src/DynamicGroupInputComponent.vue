@@ -25,35 +25,35 @@
                         <button
                             type="button"
                             :class="[iconButtonClass, dragHandleClass, 'drag-handle']"
-                            :aria-label="`Mover grupo ${groupIndex + 1}`"
+                            :aria-label="`Mover ${itemLabel} ${groupIndex + 1}`"
                             @click.prevent.stop>
                             <IconComponent name="drag" />
                         </button>
                         <h4 :class="groupTitleClass">
-                            {{ __('Item') }} #{{ groupIndex + 1 }}
+                            {{ itemLabel }} #{{ groupIndex + 1 }}
                         </h4>
                         <span :class="spacerClass" />
                         <button
                             type="button"
                             :class="iconButtonClass"
-                            title="Duplicar grupo"
-                            aria-label="Duplicar grupo"
+                            :title="`Duplicar ${itemLabel} ${groupIndex + 1}`"
+                            :aria-label="`Duplicar ${itemLabel} ${groupIndex + 1}`"
                             @click.prevent.stop="duplicateGroup(groupIndex)">
                             <IconComponent name="copy" />
                         </button>
                         <button
                             type="button"
                             :class="[iconButtonClass, iconButtonDangerClass]"
-                            :title="__('Eliminar grupo')"
-                            :aria-label="__('Eliminar grupo')"
+                            :title="`${removeButtonLabel} ${groupIndex + 1}`"
+                            :aria-label="`${removeButtonLabel} ${groupIndex + 1}`"
                             @click.prevent.stop="removeGroup(groupIndex)">
                             <IconComponent name="delete" />
                         </button>
                         <button
                             type="button"
                             :class="iconButtonClass"
-                            title="Expandir/Colapsar"
-                            aria-label="Expandir/Colapsar"
+                            :title="`Expandir ${itemLabel} ${groupIndex + 1}`"
+                            :aria-label="`Expandir ${itemLabel} ${groupIndex + 1}`"
                             :aria-expanded="! group._collapsed ? 'true' : 'false'">
                             <IconComponent :name="! group._collapsed ? 'down' : 'up'" />
                         </button>
@@ -95,7 +95,7 @@
             type="button"
             :class="[buttonClass, 'fe-mt']"
             @click.prevent="addGroup">
-            {{ addButtonLabel || __('Add') }}
+            {{ addButtonLabel }}
         </button>
     </div>
 </template>
@@ -125,13 +125,20 @@ const props = defineProps({
         type: String,
         default: ''
     },
+    // Los textos llamaban a una global __() que el paquete no declara: en una
+    // aplicación sin ella el componente no llegaba a pintarse. Ahora son props,
+    // con los mismos valores que el gemelo React.
     addButtonLabel: {
         type: String,
-        default: ''
+        default: 'Añadir'
     },
     removeButtonLabel: {
         type: String,
-        default: ''
+        default: 'Eliminar'
+    },
+    itemLabel: {
+        type: String,
+        default: 'Item'
     },
     hasSufix: {
         type: Boolean,

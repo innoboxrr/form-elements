@@ -49,7 +49,7 @@
                 	type="button"
                 	tabindex="-1"
                 	class="fe-password-toggle"
-                	:aria-label="showPassword ? 'Hide password' : 'Show password'"
+                	:aria-label="showPassword ? hidePasswordLabel : showPasswordLabel"
                 	@click="showPassword = !showPassword">
                 	<IconComponent :name="showPassword ? 'hide' : 'show'" />
                 </button>
@@ -141,6 +141,16 @@
 		maskFormat:{
 			type: Object,
 			default: () => ({}),
+		},
+		// El botón de ver la contraseña no tiene texto visible: lo que lee el
+		// lector de pantalla lo decide la aplicación, en su idioma.
+		showPasswordLabel: {
+			type: String,
+			default: 'Show password'
+		},
+		hidePasswordLabel: {
+			type: String,
+			default: 'Hide password'
 		},
 		modelValue: {
 			default: ""
