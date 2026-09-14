@@ -35,6 +35,26 @@ app.use(FormElements)   // o importa solo los que uses
 `TagsInputComponent`, `TextEditorMonoStyleInputComponent`,
 `TextInputComponent`, `TextareaInputComponent`, `TimezoneSelectInputComponent`.
 
+### Editor de código
+
+```vue
+<CodeMirrorComponent v-model="config" lang="json" label="Configuración del sitio" />
+```
+
+- **El lenguaje se carga bajo demanda.** `lang` (`html` por defecto, `css`,
+  `javascript` o `json`) llega con `import()`, así que la aplicación solo
+  descarga el que usa: un editor de JSON ya no se lleva html, css y javascript.
+  Mientras llega, el editor funciona como texto plano. Un lenguaje fuera de esa
+  lista cae a `html`.
+- `theme` es `auto` por defecto: sigue a `data-theme` en `<html>` y, sin él, a
+  `prefers-color-scheme`, la misma regla que el tema de form-core. `dark` y
+  `light` lo fuerzan. one-dark solo se descarga cuando hay que pintar en oscuro.
+- **`autofocus` es opcional** y vale `false`: el editor ya no se lleva el foco
+  al montarse si no se pide.
+- La etiqueta nombra al editor con `aria-labelledby`, y un clic en ella lo
+  enfoca.
+- Expone `view`, la `EditorView` de CodeMirror.
+
 ## Piezas de escritorio
 
 Se apoyan en lo que ya hace el navegador, sin librerías de interfaz: `<dialog>`
