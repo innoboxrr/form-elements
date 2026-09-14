@@ -1,6 +1,6 @@
 {
   "name": "innoboxrr-form-elements",
-  "version": "6.7.0",
+  "version": "6.8.0",
   "description": "Componentes Vue de la interfaz innoboxrr: formularios, diálogos, drawers, menús, avisos y paleta de comandos, sobre el tema de innoboxrr-form-core.",
   "main": "index.js",
   "scripts": {
