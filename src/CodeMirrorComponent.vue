@@ -26,13 +26,11 @@
 
     // Docs: https://www.npmjs.com/package/vue-codemirror
 
-    import { computed, shallowRef } from 'vue'
+    import { computed, shallowRef, watch } from 'vue'
     import { Codemirror } from 'vue-codemirror'
-    import { html } from '@codemirror/lang-html'
-    import { css } from '@codemirror/lang-css'
-    import { javascript } from '@codemirror/lang-javascript'
-    import { json } from '@codemirror/lang-json'
     import { oneDark } from '@codemirror/theme-one-dark'
+
+    import { cachedLanguage, isSupportedLanguage, loadLanguage } from './internal/codeMirrorLoaders.js'
 
     const props = defineProps({
 
@@ -61,25 +59,44 @@
 
     const emit = defineEmits(['update:modelValue'])
 
-    const languages = {
-        html,
-        css,
-        javascript,
-        json,
-    }
-
     /**
-     * Antes se resolvia una sola vez en setup(), asi que cambiar `lang` no
-     * tenia efecto. Y un lenguaje desconocido devolvia undefined, que acababa
-     * dentro del array de extensiones que recibe CodeMirror.
+     * El lenguaje llega con import(): importarlos los cuatro de forma estática
+     * hacía que el piloto de la aplicación base cargara 580 kB para un editor
+     * que solo edita JSON.
+     *
+     * Mientras llega, el editor ya funciona como texto plano. Cuando llega,
+     * cambia `extensions` y vue-codemirror reconfigura su Compartment sin
+     * rehacer la vista: no se pierden el cursor ni el historial.
      */
-    const extensions = computed(() => {
+    const languageSupport = shallowRef(null)
 
-        const language = languages[props.lang] ?? languages.html
+    // Solo cuenta la última petición: un lenguaje lento no pisa al siguiente.
+    let languageRequest = 0
 
-        return [language(), oneDark]
+    watch(() => props.lang, (lang) => {
 
-    })
+        // Un lenguaje desconocido cae a html, como antes de cargarlos bajo demanda.
+        const name = isSupportedLanguage(lang) ? lang : 'html'
+        const request = ++languageRequest
+
+        languageSupport.value = cachedLanguage(name)
+
+        if (languageSupport.value) {
+            return
+        }
+
+        loadLanguage(name).then((support) => {
+            if (request === languageRequest) {
+                languageSupport.value = support
+            }
+        })
+
+    }, { immediate: true })
+
+    const extensions = computed(() => [
+        ...(languageSupport.value ? [languageSupport.value] : []),
+        oneDark,
+    ])
 
     // La vista de CodeMirror no debe hacerse reactiva en profundidad.
     const view = shallowRef(null)
