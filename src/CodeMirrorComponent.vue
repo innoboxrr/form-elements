@@ -28,9 +28,15 @@
 
     import { computed, shallowRef, watch } from 'vue'
     import { Codemirror } from 'vue-codemirror'
-    import { oneDark } from '@codemirror/theme-one-dark'
 
-    import { cachedLanguage, isSupportedLanguage, loadLanguage } from './internal/codeMirrorLoaders.js'
+    import { useColorScheme } from './composables/useColorScheme.js'
+    import {
+        cachedDarkTheme,
+        cachedLanguage,
+        isSupportedLanguage,
+        loadDarkTheme,
+        loadLanguage,
+    } from './internal/codeMirrorLoaders.js'
 
     const props = defineProps({
 
@@ -48,6 +54,17 @@
         placeholder: {
             type: String,
             default: 'Escriba su codigo aqui...'
+        },
+
+        /**
+         * `auto` sigue a la aplicación, con la misma regla que tokens.css de
+         * innoboxrr-form-core. `dark` y `light` la fuerzan, como la prop
+         * `theme` del gemelo React.
+         */
+        theme: {
+            type: String,
+            default: 'auto',
+            validator: (value) => ['auto', 'dark', 'light'].includes(value)
         },
 
         modelValue: {
@@ -93,9 +110,34 @@
 
     }, { immediate: true })
 
+    /**
+     * Antes el editor llevaba one-dark siempre, también en una aplicación en
+     * modo claro. Ahora sigue a la aplicación, y one-dark solo se descarga la
+     * primera vez que hace falta pintar en oscuro.
+     */
+    const colorScheme = useColorScheme()
+
+    const resolvedTheme = computed(() => (
+        props.theme === 'dark' || props.theme === 'light' ? props.theme : colorScheme.value
+    ))
+
+    const darkTheme = shallowRef(cachedDarkTheme())
+
+    watch(resolvedTheme, (theme) => {
+
+        if (theme !== 'dark' || darkTheme.value) {
+            return
+        }
+
+        loadDarkTheme().then((extension) => {
+            darkTheme.value = extension
+        })
+
+    }, { immediate: true })
+
     const extensions = computed(() => [
         ...(languageSupport.value ? [languageSupport.value] : []),
-        oneDark,
+        ...(resolvedTheme.value === 'dark' && darkTheme.value ? [darkTheme.value] : []),
     ])
 
     // La vista de CodeMirror no debe hacerse reactiva en profundidad.

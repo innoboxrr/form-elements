@@ -1,10 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
+import { EditorView } from 'codemirror'
 
 /**
- * Qué módulos de lenguaje ha evaluado el componente. Los mocks delegan en el
- * módulo real, así que el editor se configura de verdad; lo único que añaden
- * es el registro de que alguien los importó.
+ * Qué módulos de lenguaje o de tema ha evaluado el componente. Los mocks
+ * delegan en el módulo real, así que el editor se configura de verdad; lo
+ * único que añaden es el registro de que alguien los importó.
  *
  * Los módulos se cachean por archivo de pruebas: una vez cargado un lenguaje,
  * sigue cargado en las pruebas siguientes. Por eso cada prueba mira lo que se
@@ -32,6 +33,11 @@ vi.mock('@codemirror/lang-json', async (importOriginal) => {
     return importOriginal()
 })
 
+vi.mock('@codemirror/theme-one-dark', async (importOriginal) => {
+    imported.push('one-dark')
+    return importOriginal()
+})
+
 import CodeMirrorComponent from '../src/CodeMirrorComponent.vue'
 
 const mounted = []
@@ -46,17 +52,50 @@ const mountEditor = (props = {}) => {
 
 const languageOf = (wrapper) => wrapper.find('.cm-content').attributes('data-language')
 
+const isDark = (wrapper) => wrapper.vm.view.state.facet(EditorView.darkTheme)
+
+/** Da tiempo a que resuelva un import() y a que Vue repinte. */
+const settle = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    await flushPromises()
+}
+
+/**
+ * Un matchMedia de mentira: jsdom no trae uno. Devuelve la función que avisa
+ * de un cambio en la preferencia del sistema.
+ */
+const preferDark = (dark) => {
+    const listeners = new Set()
+    let matches = dark
+
+    vi.stubGlobal('matchMedia', (query) => ({
+        get matches() {
+            return query === '(prefers-color-scheme: dark)' && matches
+        },
+        media: query,
+        addEventListener: (_event, listener) => listeners.add(listener),
+        removeEventListener: (_event, listener) => listeners.delete(listener),
+    }))
+
+    return (next) => {
+        matches = next
+        listeners.forEach((listener) => listener({ matches: next }))
+    }
+}
+
 afterEach(() => {
     mounted.splice(0).forEach((wrapper) => wrapper.unmount())
+    document.documentElement.removeAttribute('data-theme')
+    vi.unstubAllGlobals()
 })
 
 /**
  * El piloto de la aplicación base generó un chunk de 580 kB (200 kB gzip) solo
  * para su editor del sitio, que únicamente edita JSON: el componente importaba
- * de forma estática html, css, javascript y json.
+ * de forma estática html, css, javascript, json y el tema one-dark.
  */
 describe('CodeMirrorComponent: lenguajes bajo demanda', () => {
-    it('importar el componente no carga ningún lenguaje', () => {
+    it('importar el componente no carga ningún lenguaje ni el tema oscuro', () => {
         expect(imported).toEqual([])
     })
 
@@ -110,5 +149,93 @@ describe('CodeMirrorComponent: lenguajes bajo demanda', () => {
         expect(wrapper.find('.cm-editor').exists()).toBe(true)
 
         await vi.waitFor(() => expect(languageOf(wrapper)).toBe('html'))
+    })
+})
+
+/**
+ * El editor se pintaba siempre con one-dark, también en una aplicación en modo
+ * claro. Ahora sigue a innoboxrr-form-core: `data-theme` en <html> manda, y sin
+ * él decide `prefers-color-scheme`. Es la misma regla que tokens.css.
+ */
+describe('CodeMirrorComponent: tema', () => {
+    it('en claro no carga one-dark ni pinta oscuro', async () => {
+        preferDark(false)
+
+        const wrapper = mountEditor({ lang: 'json' })
+
+        await settle()
+
+        expect(isDark(wrapper)).toBe(false)
+        expect(imported).not.toContain('one-dark')
+    })
+
+    it('sin data-theme sigue la preferencia del sistema', async () => {
+        preferDark(true)
+
+        const wrapper = mountEditor({ lang: 'json' })
+
+        await vi.waitFor(() => expect(isDark(wrapper)).toBe(true))
+
+        expect(imported).toContain('one-dark')
+    })
+
+    it('data-theme="dark" en la raíz pinta oscuro', async () => {
+        preferDark(false)
+        document.documentElement.setAttribute('data-theme', 'dark')
+
+        const wrapper = mountEditor({ lang: 'json' })
+
+        await vi.waitFor(() => expect(isDark(wrapper)).toBe(true))
+    })
+
+    it('data-theme="light" gana sobre un sistema en oscuro', async () => {
+        preferDark(true)
+        document.documentElement.setAttribute('data-theme', 'light')
+
+        const wrapper = mountEditor({ lang: 'json' })
+
+        await settle()
+
+        expect(isDark(wrapper)).toBe(false)
+    })
+
+    it('cambiar el tema de la aplicación repinta el editor ya montado', async () => {
+        const changeSystem = preferDark(false)
+
+        const wrapper = mountEditor({ lang: 'json' })
+
+        await settle()
+        expect(isDark(wrapper)).toBe(false)
+
+        document.documentElement.setAttribute('data-theme', 'dark')
+        await vi.waitFor(() => expect(isDark(wrapper)).toBe(true))
+
+        document.documentElement.removeAttribute('data-theme')
+        await vi.waitFor(() => expect(isDark(wrapper)).toBe(false))
+
+        changeSystem(true)
+        await vi.waitFor(() => expect(isDark(wrapper)).toBe(true))
+    })
+
+    it('la prop theme manda sobre la aplicación, como en React', async () => {
+        preferDark(false)
+        document.documentElement.setAttribute('data-theme', 'dark')
+
+        const light = mountEditor({ lang: 'json', theme: 'light' })
+
+        await settle()
+        expect(isDark(light)).toBe(false)
+
+        document.documentElement.setAttribute('data-theme', 'light')
+
+        const dark = mountEditor({ lang: 'json', theme: 'dark' })
+
+        await vi.waitFor(() => expect(isDark(dark)).toBe(true))
+    })
+
+    it('sigue exponiendo la vista de CodeMirror', () => {
+        const wrapper = mountEditor({ lang: 'json' })
+
+        expect(wrapper.vm.view).toBeInstanceOf(EditorView)
     })
 })
