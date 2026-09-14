@@ -239,3 +239,64 @@ describe('CodeMirrorComponent: tema', () => {
         expect(wrapper.vm.view).toBeInstanceOf(EditorView)
     })
 })
+
+/**
+ * El piloto de la aplicación base encontró que el editor se llevaba el foco al
+ * montarse, aunque estuviera al final de un formulario, y que su etiqueta no
+ * nombraba a nada: un lector de pantalla anunciaba un campo de texto sin nombre.
+ *
+ * Se espía `focus` en vez de mirar `document.activeElement` porque jsdom no
+ * enfoca un elemento contenteditable como lo hace un navegador.
+ */
+describe('CodeMirrorComponent: foco y etiqueta', () => {
+    afterEach(() => vi.restoreAllMocks())
+
+    it('no se lleva el foco al montarse', async () => {
+        const focus = vi.spyOn(EditorView.prototype, 'focus')
+
+        mountEditor({ lang: 'json', label: 'Configuración del sitio' })
+
+        await settle()
+
+        expect(focus).not.toHaveBeenCalled()
+    })
+
+    it('autofocus lo pide de forma explícita', async () => {
+        const focus = vi.spyOn(EditorView.prototype, 'focus')
+
+        const wrapper = mountEditor({ lang: 'json', autofocus: true })
+
+        await settle()
+
+        expect(focus).toHaveBeenCalled()
+        expect(focus.mock.contexts[0]).toBe(wrapper.vm.view)
+    })
+
+    it('la etiqueta nombra al editor', () => {
+        const wrapper = mountEditor({ lang: 'json', label: 'Configuración del sitio' })
+
+        const id = wrapper.find('label').attributes('id')
+
+        expect(id).toBeTruthy()
+        expect(wrapper.find('.cm-content').attributes('aria-labelledby')).toBe(id)
+        expect(document.getElementById(id).textContent.trim()).toBe('Configuración del sitio')
+    })
+
+    it('sin etiqueta el editor no apunta a una vacía', () => {
+        const wrapper = mountEditor({ lang: 'json' })
+
+        expect(wrapper.find('.cm-content').attributes('aria-labelledby')).toBeUndefined()
+    })
+
+    it('un clic en la etiqueta enfoca el editor, como con un input', async () => {
+        const wrapper = mountEditor({ lang: 'json', label: 'Configuración del sitio' })
+
+        await settle()
+
+        const focus = vi.spyOn(EditorView.prototype, 'focus')
+
+        await wrapper.find('label').trigger('click')
+
+        expect(focus).toHaveBeenCalledTimes(1)
+    })
+})

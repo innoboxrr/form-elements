@@ -4,12 +4,17 @@
 
         <div class="fe-inline fe-w-full">
 
-            <label class="">{{ label }}</label>
+            <!--
+                Un <label for> no puede apuntar al contenteditable de
+                CodeMirror: el editor se nombra con aria-labelledby y el clic
+                se reenvía a mano, como haría el navegador con un input.
+            -->
+            <label :id="labelId" class="" @click="focusEditor">{{ label }}</label>
 
             <Codemirror
                 :placeholder="placeholder"
                 :style="{ height: '400px' }"
-                :autofocus="true"
+                :autofocus="autofocus"
                 :indent-with-tab="true"
                 :tab-size="4"
                 :extensions="extensions"
@@ -26,7 +31,8 @@
 
     // Docs: https://www.npmjs.com/package/vue-codemirror
 
-    import { computed, shallowRef, watch } from 'vue'
+    import { computed, shallowRef, useId, watch } from 'vue'
+    import { EditorView } from 'codemirror'
     import { Codemirror } from 'vue-codemirror'
 
     import { useColorScheme } from './composables/useColorScheme.js'
@@ -65,6 +71,15 @@
             type: String,
             default: 'auto',
             validator: (value) => ['auto', 'dark', 'light'].includes(value)
+        },
+
+        /**
+         * Antes el editor se llevaba el foco siempre al montarse, aunque
+         * estuviera al final de un formulario. Ahora hay que pedirlo.
+         */
+        autofocus: {
+            type: Boolean,
+            default: false
         },
 
         modelValue: {
@@ -135,9 +150,18 @@
 
     }, { immediate: true })
 
+    // useId() es único dentro de la aplicación, como en TextInputComponent.
+    const labelId = useId()
+
+    // Sin texto no se apunta a la etiqueta: nombraría al editor con nada.
+    const labelAttributes = computed(() => (
+        props.label ? EditorView.contentAttributes.of({ 'aria-labelledby': labelId }) : null
+    ))
+
     const extensions = computed(() => [
         ...(languageSupport.value ? [languageSupport.value] : []),
         ...(resolvedTheme.value === 'dark' && darkTheme.value ? [darkTheme.value] : []),
+        ...(labelAttributes.value ? [labelAttributes.value] : []),
     ])
 
     // La vista de CodeMirror no debe hacerse reactiva en profundidad.
@@ -145,6 +169,10 @@
 
     const handleReady = (payload) => {
         view.value = payload.view
+    }
+
+    const focusEditor = () => {
+        view.value?.focus()
     }
 
     const value = computed({
