@@ -1,5 +1,21 @@
 # Changelog
 
+## 6.9.0 — 2026-11-26
+
+### Puede afectar a quien ya lo usa
+
+- **`engines.node` pasa de `>=20` a `>=22.12`.** Node 20 es EOL desde
+  2026-04-30 y Vitest 5 exige `^22.12 || >=24`. CI ya no prueba Node 20:
+  corre en 22 y 24.
+
+### Cambiado
+
+- **Cadena de pruebas en Vite 8 + Vitest 5.** `vite` `^7.1.0` → `^8.0.0`,
+  `vitest` `^3.0.0` → `^5.0.0` y `jsdom` `^25.0.0` → `^31.0.0`, para que la
+  línea base de JS del ecosistema pueda subir sin que falle el audit de este
+  paquete. Solo cambian dependencias de desarrollo; el código publicado es el
+  mismo. Las 134 pruebas pasan sin tocar ni la configuración ni los tests.
+
 ## 6.8.0 — 2026-09-13
 
 ### Puede afectar a quien ya lo usa
